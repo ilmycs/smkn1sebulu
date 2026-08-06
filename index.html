@@ -1,0 +1,3106 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Media belajar konfigurasi Debian dan MikroTik untuk siswa SMK TKJ." name="description"/>
+<title>DebianLab | Belajar Debian & MikroTik</title>
+<style>
+:root {
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --surface-soft: #f8f9fd;
+  --primary: #a80030;
+  --primary-dark: #7f0025;
+  --primary-soft: #ffe9ef;
+  --text: #172033;
+  --muted: #667085;
+  --line: #e5e9f2;
+  --success: #147a52;
+  --warning: #a45b00;
+  --terminal: #111827;
+  --shadow: 0 16px 45px rgba(29, 41, 57, 0.08);
+  --radius: 18px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+code,
+pre {
+  font-family: "Cascadia Code", Consolas, monospace;
+}
+
+.app-shell {
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 280px;
+  min-height: 100vh;
+  position: fixed;
+  inset: 0 auto 0 0;
+  padding: 28px 20px;
+  background: #1b1320;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  z-index: 20;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 8px 28px;
+}
+
+.brand-logo {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--primary);
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.brand h1,
+.brand p {
+  margin: 0;
+}
+
+.brand h1 {
+  font-size: 22px;
+}
+
+.brand p {
+  margin-top: 4px;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #cfc4d3;
+}
+
+.nav-menu {
+  display: grid;
+  gap: 8px;
+}
+
+.nav-item {
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: #d9d1dc;
+  padding: 13px 14px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  text-align: left;
+}
+
+.nav-item:hover,
+.nav-item.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.sidebar-card {
+  margin-top: auto;
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-card span,
+.sidebar-card strong {
+  display: inline-block;
+}
+
+.sidebar-card strong {
+  float: right;
+}
+
+.sidebar-card small {
+  display: block;
+  margin-top: 8px;
+  color: #cfc4d3;
+}
+
+.progress-track {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 12px;
+}
+
+.progress-bar {
+  width: 0;
+  height: 100%;
+  background: #ff7da3;
+  transition: width 0.3s ease;
+}
+
+.main-content {
+  margin-left: 280px;
+  min-height: 100vh;
+}
+
+.topbar {
+  height: 96px;
+  padding: 0 36px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(245, 247, 251, 0.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(229, 233, 242, 0.8);
+}
+
+.topbar h2,
+.topbar p {
+  margin: 0;
+}
+
+.eyebrow {
+  color: var(--primary);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  font-weight: 800;
+  margin: 0 0 7px;
+}
+
+.student-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 9px 13px;
+}
+
+.student-badge span {
+  font-size: 25px;
+}
+
+.student-badge small,
+.student-badge strong {
+  display: block;
+}
+
+.student-badge small {
+  color: var(--muted);
+}
+
+.menu-toggle {
+  display: none;
+  border: 0;
+  background: var(--surface);
+  padding: 9px 11px;
+  border-radius: 10px;
+}
+
+.page {
+  display: none;
+  padding: 34px 36px 60px;
+  animation: fadeUp 0.35s ease;
+}
+
+.page.active {
+  display: block;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 40px;
+  align-items: center;
+  min-height: 430px;
+  padding: 48px;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at top right, rgba(168, 0, 48, 0.16), transparent 38%),
+    linear-gradient(135deg, #ffffff, #faf6f8);
+  box-shadow: var(--shadow);
+}
+
+.hero h3 {
+  max-width: 760px;
+  margin: 18px 0;
+  font-size: clamp(34px, 5vw, 58px);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+}
+
+.hero p {
+  max-width: 700px;
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.pill,
+.difficulty {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.pill {
+  padding: 8px 12px;
+  color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+.primary-btn,
+.secondary-btn {
+  border-radius: 11px;
+  padding: 12px 18px;
+  font-weight: 750;
+}
+
+.primary-btn {
+  border: 1px solid var(--primary);
+  background: var(--primary);
+  color: white;
+}
+
+.primary-btn:hover {
+  background: var(--primary-dark);
+}
+
+.secondary-btn {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.terminal-preview,
+.sim-terminal {
+  overflow: hidden;
+  border-radius: 18px;
+  background: var(--terminal);
+  color: #e6edf7;
+  box-shadow: 0 25px 55px rgba(17, 24, 39, 0.25);
+}
+
+.terminal-head {
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 16px;
+  background: #202a3a;
+}
+
+.terminal-head span {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #ff6b6b;
+}
+
+.terminal-head span:nth-child(2) {
+  background: #ffd166;
+}
+
+.terminal-head span:nth-child(3) {
+  background: #06d6a0;
+}
+
+.terminal-head small {
+  margin-left: 8px;
+  color: #a8b4c5;
+}
+
+.terminal-preview pre {
+  min-height: 270px;
+  margin: 0;
+  padding: 28px;
+  white-space: pre-wrap;
+  line-height: 1.75;
+}
+
+.green { color: #4ade80; }
+.blue { color: #60a5fa; }
+.success { color: #86efac; }
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-top: 24px;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+
+.stat-card > span {
+  font-size: 30px;
+}
+
+.stat-card strong,
+.stat-card small {
+  display: block;
+}
+
+.stat-card strong {
+  font-size: 27px;
+}
+
+.stat-card small {
+  color: var(--muted);
+}
+
+.section-heading {
+  margin: 44px 0 22px;
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: end;
+}
+
+.section-heading h3 {
+  margin: 0;
+  font-size: 29px;
+}
+
+.section-heading input {
+  min-width: 260px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  outline: none;
+}
+
+.section-heading input:focus {
+  border-color: var(--primary);
+}
+
+.roadmap {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.roadmap article,
+.glossary-grid article {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 22px;
+}
+
+.step-number {
+  color: var(--primary);
+  font-weight: 900;
+}
+
+.roadmap h4 {
+  margin: 16px 0 8px;
+}
+
+.roadmap p,
+.glossary-grid p {
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.module-list {
+  display: grid;
+  gap: 15px;
+}
+
+.module-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.module-summary {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 18px;
+  padding: 20px;
+}
+
+.module-icon {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 900;
+}
+
+.module-summary h4,
+.module-summary p {
+  margin: 0;
+}
+
+.module-summary h4 {
+  margin: 4px 0 7px;
+}
+
+.module-summary p:last-child,
+.module-label {
+  color: var(--muted);
+}
+
+.module-label {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.accordion-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--surface-soft);
+  font-size: 23px;
+}
+
+.module-content {
+  display: none;
+  border-top: 1px solid var(--line);
+  padding: 24px 28px 28px 92px;
+}
+
+.module-card.open .module-content {
+  display: block;
+}
+
+.module-content h5 {
+  margin-top: 0;
+  font-size: 17px;
+}
+
+.module-content p {
+  line-height: 1.7;
+  color: #475467;
+}
+
+.module-content pre {
+  overflow-x: auto;
+  padding: 17px;
+  border-radius: 12px;
+  background: #111827;
+  color: #e6edf7;
+  line-height: 1.6;
+}
+
+.command-grid,
+.rubric-grid {
+  display: grid;
+  grid-template-columns: minmax(140px, auto) 1fr;
+  gap: 1px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+
+.command-grid code,
+.command-grid span,
+.rubric-grid span,
+.rubric-grid strong {
+  padding: 13px 15px;
+  background: var(--surface-soft);
+}
+
+.command-grid code {
+  color: var(--primary);
+  font-weight: 750;
+}
+
+.note-box,
+.warning-box {
+  padding: 15px 17px;
+  margin: 18px 0;
+  border-radius: 12px;
+  line-height: 1.6;
+}
+
+.note-box {
+  color: #1f5b44;
+  background: #eaf8f1;
+}
+
+.warning-box {
+  color: #7a4600;
+  background: #fff4df;
+}
+
+.complete-check {
+  display: inline-flex;
+  gap: 9px;
+  align-items: center;
+  margin-top: 10px;
+  font-weight: 750;
+}
+
+.complete-check input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+}
+
+.lab-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 22px;
+}
+
+.sim-terminal {
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+}
+
+.terminal-output {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 440px;
+  padding: 20px 22px;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.terminal-output p {
+  margin: 0 0 8px;
+}
+
+.terminal-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-top: 1px solid #303b4c;
+  padding: 15px 20px;
+  font-family: "Cascadia Code", Consolas, monospace;
+}
+
+.terminal-input-row label {
+  color: #4ade80;
+  white-space: nowrap;
+}
+
+.terminal-input-row input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: white;
+}
+
+.command-help,
+.assessment-box {
+  align-self: start;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 22px;
+}
+
+.command-help h4,
+.assessment-box h4 {
+  margin-top: 0;
+}
+
+.command-help li {
+  margin: 12px 0;
+}
+
+.command-help code {
+  color: var(--primary);
+}
+
+.mission-status {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px;
+  margin: 20px 0;
+  background: var(--primary-soft);
+  border-radius: 12px;
+}
+
+.practice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.practice-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 22px;
+}
+
+.practice-card h4 {
+  margin: 16px 0 8px;
+}
+
+.practice-card p,
+.practice-card li {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.practice-card details {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid var(--line);
+}
+
+.practice-card summary {
+  cursor: pointer;
+  font-weight: 750;
+}
+
+.difficulty {
+  padding: 7px 10px;
+}
+
+.difficulty.easy {
+  background: #eaf8f1;
+  color: var(--success);
+}
+
+.difficulty.medium {
+  background: #fff4df;
+  color: var(--warning);
+}
+
+.difficulty.hard {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.assessment-box {
+  margin-top: 22px;
+}
+
+.quiz-list {
+  display: grid;
+  gap: 16px;
+}
+
+.quiz-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 22px;
+}
+
+.quiz-card > p {
+  margin-top: 0;
+}
+
+.quiz-card label {
+  display: block;
+  padding: 10px 12px;
+  margin-top: 7px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.quiz-card label:hover {
+  background: var(--surface-soft);
+}
+
+.quiz-card label.correct {
+  border-color: #6bd3a8;
+  background: #eaf8f1;
+}
+
+.quiz-card label.wrong {
+  border-color: #ee9bad;
+  background: #fff0f3;
+}
+
+.quiz-card input {
+  accent-color: var(--primary);
+  margin-right: 8px;
+}
+
+.submit-quiz {
+  justify-self: start;
+}
+
+.quiz-result {
+  margin-top: 22px;
+  padding: 30px;
+  text-align: center;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+
+.quiz-result span {
+  font-size: 42px;
+}
+
+.quiz-result h4 {
+  font-size: 23px;
+  margin: 12px 0;
+}
+
+.glossary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.glossary-grid h4 {
+  color: var(--primary);
+  margin-top: 0;
+}
+
+footer {
+  padding: 24px 36px 40px;
+  color: var(--muted);
+  text-align: center;
+  font-size: 13px;
+}
+
+footer p {
+  margin: 5px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@media (max-width: 1100px) {
+  .hero,
+  .lab-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid,
+  .roadmap {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .glossary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .command-help {
+    width: 100%;
+  }
+}
+
+@media (max-width: 820px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+
+  .menu-toggle {
+    display: inline-block;
+  }
+
+  .topbar {
+    padding: 0 18px;
+  }
+
+  .student-badge {
+    display: none;
+  }
+
+  .page {
+    padding: 24px 18px 46px;
+  }
+
+  .hero {
+    padding: 28px 22px;
+  }
+
+  .hero h3 {
+    font-size: 38px;
+  }
+
+  .module-content {
+    padding: 22px;
+  }
+}
+
+@media (max-width: 620px) {
+  .stats-grid,
+  .roadmap,
+  .practice-grid,
+  .glossary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .section-heading input {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .module-summary {
+    grid-template-columns: auto 1fr;
+  }
+
+  .accordion-btn {
+    grid-column: 1 / -1;
+    width: 100%;
+    height: 38px;
+    border-radius: 10px;
+  }
+
+  .command-grid,
+  .rubric-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   PENYEMPURNAAN TAMPILAN DEBIANLAB
+   ========================================================= */
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 85% 5%, rgba(168, 0, 48, 0.08), transparent 24rem),
+    radial-gradient(circle at 20% 85%, rgba(67, 56, 202, 0.05), transparent 26rem),
+    var(--bg);
+}
+
+::selection {
+  color: #ffffff;
+  background: var(--primary);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #eef1f6;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #b7bfcc;
+  border: 2px solid #eef1f6;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+button,
+a,
+input,
+summary,
+label {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+input:focus-visible,
+summary:focus-visible,
+label:has(input:focus-visible) {
+  outline: 3px solid rgba(168, 0, 48, 0.22);
+  outline-offset: 3px;
+}
+
+.sidebar {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 28%),
+    linear-gradient(160deg, #241329 0%, #160e1a 62%, #1e101b 100%);
+  box-shadow: 16px 0 45px rgba(22, 14, 26, 0.15);
+}
+
+.sidebar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.3;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.sidebar > * {
+  position: relative;
+}
+
+.brand-logo {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 12px 24px rgba(168, 0, 48, 0.35);
+}
+
+.brand-logo::after {
+  content: "";
+  position: absolute;
+  width: 50px;
+  height: 14px;
+  top: -8px;
+  left: -22px;
+  transform: rotate(-42deg);
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.nav-item {
+  position: relative;
+  overflow: hidden;
+  transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.nav-item::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 4px;
+  height: 0;
+  border-radius: 0 6px 6px 0;
+  background: #ff7da3;
+  transform: translateY(-50%);
+  transition: height 0.2s ease;
+}
+
+.nav-item:hover {
+  transform: translateX(3px);
+}
+
+.nav-item.active::after {
+  height: 58%;
+}
+
+.sidebar-card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+}
+
+.progress-bar {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, #ff6b9c, #ffb0c7);
+}
+
+.progress-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  animation: progressShine 2.2s infinite;
+}
+
+@keyframes progressShine {
+  to { transform: translateX(100%); }
+}
+
+.topbar {
+  box-shadow: 0 8px 25px rgba(29, 41, 57, 0.035);
+}
+
+.student-badge,
+.stat-card,
+.roadmap article,
+.module-card,
+.practice-card,
+.quiz-card,
+.glossary-grid article,
+.command-help,
+.assessment-box,
+.quiz-result {
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.student-badge:hover,
+.stat-card:hover,
+.roadmap article:hover,
+.practice-card:hover,
+.glossary-grid article:hover {
+  transform: translateY(-5px);
+  border-color: rgba(168, 0, 48, 0.2);
+  box-shadow: 0 18px 38px rgba(29, 41, 57, 0.1);
+}
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+}
+
+.hero::before,
+.hero::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero::before {
+  width: 280px;
+  height: 280px;
+  right: -150px;
+  top: -145px;
+  border: 48px solid rgba(168, 0, 48, 0.045);
+}
+
+.hero::after {
+  width: 180px;
+  height: 180px;
+  left: -105px;
+  bottom: -125px;
+  border: 35px solid rgba(67, 56, 202, 0.035);
+}
+
+.hero-copy,
+.terminal-preview {
+  position: relative;
+  z-index: 1;
+}
+
+.primary-btn,
+.secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(168, 0, 48, 0.24);
+}
+
+.secondary-btn:hover {
+  transform: translateY(-2px);
+  border-color: rgba(168, 0, 48, 0.3);
+  color: var(--primary);
+  box-shadow: 0 10px 20px rgba(29, 41, 57, 0.08);
+}
+
+.primary-btn:active,
+.secondary-btn:active {
+  transform: translateY(0);
+}
+
+.terminal-preview,
+.sim-terminal {
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.terminal-preview::after,
+.sim-terminal::after {
+  content: "";
+  position: absolute;
+  inset: 46px 0 auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+}
+
+.terminal-preview pre,
+.terminal-output {
+  text-shadow: 0 0 16px rgba(74, 222, 128, 0.05);
+}
+
+.stat-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::after {
+  content: "";
+  position: absolute;
+  width: 65px;
+  height: 65px;
+  right: -25px;
+  bottom: -25px;
+  border-radius: 50%;
+  background: var(--primary-soft);
+  transition: transform 0.25s ease;
+}
+
+.stat-card:hover::after {
+  transform: scale(1.35);
+}
+
+.stat-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.roadmap article {
+  position: relative;
+  overflow: hidden;
+}
+
+.roadmap article::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 4px;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: linear-gradient(90deg, var(--primary), #ef4777);
+  transition: transform 0.22s ease;
+}
+
+.roadmap article:hover::before {
+  transform: scaleX(1);
+}
+
+.section-heading input {
+  box-shadow: 0 8px 20px rgba(29, 41, 57, 0.035);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.section-heading input:focus {
+  box-shadow: 0 0 0 4px rgba(168, 0, 48, 0.09), 0 10px 24px rgba(29, 41, 57, 0.06);
+}
+
+.module-card:hover {
+  border-color: rgba(168, 0, 48, 0.2);
+  box-shadow: 0 15px 32px rgba(29, 41, 57, 0.075);
+}
+
+.module-card.open {
+  border-color: rgba(168, 0, 48, 0.28);
+  box-shadow: 0 18px 40px rgba(29, 41, 57, 0.085);
+}
+
+.module-summary {
+  cursor: pointer;
+}
+
+.module-icon {
+  box-shadow: inset 0 0 0 1px rgba(168, 0, 48, 0.08);
+}
+
+.accordion-btn {
+  transition: transform 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.module-card.open .accordion-btn {
+  color: #ffffff;
+  border-color: var(--primary);
+  background: var(--primary);
+  transform: rotate(180deg);
+}
+
+.module-content {
+  animation: accordionReveal 0.28s ease;
+}
+
+@keyframes accordionReveal {
+  from { opacity: 0; transform: translateY(-7px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.module-content pre,
+.practice-card code,
+.command-help code,
+.glossary-grid code {
+  scrollbar-color: #667085 #111827;
+}
+
+.complete-check {
+  padding: 10px 13px;
+  border-radius: 10px;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+}
+
+.complete-check:has(input:checked) {
+  color: var(--success);
+  background: #eaf8f1;
+  border-color: #b9e6d2;
+}
+
+.terminal-input-row:focus-within {
+  box-shadow: inset 0 -2px 0 rgba(74, 222, 128, 0.75);
+}
+
+.terminal-success {
+  color: #86efac;
+  font-weight: 800;
+}
+
+.practice-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.practice-card::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 3px;
+  transform: scaleX(0);
+  background: var(--primary);
+  transition: transform 0.22s ease;
+}
+
+.practice-card:hover::after {
+  transform: scaleX(1);
+}
+
+.practice-card summary {
+  color: var(--primary);
+}
+
+.practice-card details[open] summary {
+  margin-bottom: 10px;
+}
+
+.quiz-card label {
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.quiz-card label:hover {
+  transform: translateX(4px);
+  border-color: rgba(168, 0, 48, 0.22);
+}
+
+.quiz-card label:has(input:checked) {
+  color: var(--primary-dark);
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  font-weight: 700;
+}
+
+.quiz-card label.correct:has(input:checked),
+.quiz-card label.correct {
+  color: #145e42;
+}
+
+.quiz-card label.wrong:has(input:checked),
+.quiz-card label.wrong {
+  color: #9c1736;
+}
+
+.quiz-result:not([hidden]) {
+  animation: resultPop 0.35s ease;
+}
+
+@keyframes resultPop {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.glossary-grid article {
+  position: relative;
+  overflow: hidden;
+}
+
+.glossary-grid article::after {
+  content: "";
+  position: absolute;
+  width: 72px;
+  height: 72px;
+  right: -35px;
+  top: -35px;
+  border-radius: 50%;
+  background: var(--primary-soft);
+}
+
+.glossary-grid h4,
+.glossary-grid p {
+  position: relative;
+  z-index: 1;
+}
+
+footer {
+  border-top: 1px solid rgba(229, 233, 242, 0.8);
+  background: rgba(255, 255, 255, 0.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 820px) {
+  .sidebar {
+    box-shadow: 20px 0 60px rgba(22, 14, 26, 0.32);
+  }
+
+  .sidebar.open::after {
+    content: "";
+    position: fixed;
+    inset: 0 0 0 280px;
+    background: rgba(15, 10, 17, 0.35);
+    backdrop-filter: blur(2px);
+  }
+
+  .topbar {
+    height: 82px;
+  }
+}
+
+@media (max-width: 620px) {
+  .hero {
+    border-radius: 22px;
+  }
+
+  .hero-actions .primary-btn,
+  .hero-actions .secondary-btn {
+    width: 100%;
+  }
+
+  .terminal-preview pre {
+    min-height: 230px;
+    padding: 20px;
+    font-size: 12px;
+  }
+
+  .stat-card,
+  .roadmap article,
+  .practice-card,
+  .quiz-card,
+  .glossary-grid article {
+    padding: 18px;
+  }
+}
+
+
+/* =========================================================
+   HALAMAN MIKROTIK
+   ========================================================= */
+.mikrotik-intro {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 22px;
+  margin-bottom: 24px;
+}
+
+.mikrotik-overview,
+.topology-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 24px;
+  box-shadow: 0 12px 30px rgba(29, 41, 57, 0.055);
+}
+
+.mikrotik-overview h4,
+.topology-card h4 {
+  margin: 0 0 10px;
+  font-size: 20px;
+}
+
+.mikrotik-overview p,
+.topology-card p {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.topology-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin: 20px 0 12px;
+}
+
+.topology-node {
+  min-width: 105px;
+  padding: 13px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-soft);
+  text-align: center;
+  font-weight: 800;
+}
+
+.topology-node.router {
+  color: #ffffff;
+  border-color: var(--primary);
+  background: var(--primary);
+  box-shadow: 0 10px 22px rgba(168, 0, 48, 0.2);
+}
+
+.topology-arrow {
+  color: var(--primary);
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.winbox-path {
+  display: block;
+  margin: 10px 0;
+  padding: 12px 14px;
+  border-left: 4px solid var(--primary);
+  border-radius: 8px;
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+  font-weight: 750;
+}
+
+.config-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.config-table th,
+.config-table td {
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.config-table th {
+  background: var(--surface-soft);
+}
+
+.mikrotik-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  margin: 0 5px 7px 0;
+  border-radius: 999px;
+  background: #eaf3ff;
+  color: #17589b;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+@media (max-width: 900px) {
+  .mikrotik-intro {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .topology-arrow {
+    width: 100%;
+    text-align: center;
+    transform: rotate(90deg);
+  }
+
+  .topology-node {
+    width: 100%;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="app-shell">
+<aside class="sidebar" id="sidebar">
+<div class="brand">
+<div class="brand-logo">D</div>
+<div>
+<h1>DebianLab</h1>
+<p>SMK TKJ • Debian &amp; MikroTik</p>
+</div>
+</div>
+<nav aria-label="Navigasi utama" class="nav-menu">
+<button class="nav-item active" data-target="beranda">🏠 <span>Beranda</span></button>
+<button class="nav-item" data-target="materi">📚 <span>Materi Debian</span></button>
+<button class="nav-item" data-target="mikrotik">📡 <span>Materi MikroTik</span></button>
+<button class="nav-item" data-target="terminal">⌨️ <span>Terminal Lab</span></button>
+<button class="nav-item" data-target="praktikum">🧪 <span>Praktikum</span></button>
+
+<button class="nav-item" data-target="glosarium">🗂️ <span>Glosarium</span></button>
+</nav>
+<div class="sidebar-card">
+<span>Progres Belajar</span>
+<strong id="progressText">0%</strong>
+<div class="progress-track">
+<div class="progress-bar" id="progressBar"></div>
+</div>
+<small>Tandai setiap modul yang telah dipelajari.</small>
+</div>
+</aside>
+<main class="main-content">
+<header class="topbar">
+<button aria-label="Buka menu" class="menu-toggle" id="menuToggle">☰</button>
+<div>
+<p class="eyebrow">MEDIA PEMBELAJARAN TKJ</p>
+<h2 id="pageTitle">Beranda | <a href="mikrotik.html">MikroTik MTCNA</a></h2>
+</div>
+<div class="student-badge">
+<span>👨‍💻</span>
+<div>
+<small>Mode Belajar</small>
+<strong>Administrator Debian &amp; MikroTik</strong>
+</div>
+</div>
+</header>
+<section class="page active" id="beranda">
+<div class="hero">
+<div class="hero-orb orb-one"></div>
+<div class="hero-orb orb-two"></div>
+<div class="hero-copy">
+<span class="pill"><span class="pulse-dot"></span> Debian GNU/Linux</span>
+<div class="typing-line"><span id="typingText"></span><span class="typing-cursor">|</span></div>
+<h3>Belajar konfigurasi server Debian secara terarah dan praktis.</h3>
+<p>
+              Pelajari perintah dasar Linux, layanan server Debian, serta konfigurasi router MikroTik seperti IP address, DHCP, NAT, firewall, dan manajemen bandwidth melalui contoh yang ramah untuk siswa SMK.
+            </p>
+<div class="hero-actions">
+<button class="primary-btn jump-btn" data-target="materi">Mulai Belajar</button>
+<button class="secondary-btn jump-btn" data-target="terminal">Buka Terminal Lab</button>
+</div>
+</div>
+<div class="terminal-preview">
+<div class="terminal-head">
+<span></span><span></span><span></span>
+<small>root@debian:~</small>
+</div>
+<pre><code><span class="green">root@debian</span>:<span class="blue">~</span># ip address
+2: enp0s3: &lt;BROADCAST,MULTICAST,UP&gt;
+    inet 192.168.10.2/24
+
+<span class="green">root@debian</span>:<span class="blue">~</span># systemctl status ssh
+● ssh.service - OpenBSD Secure Shell server
+  Active: <span class="success">active (running)</span></code></pre>
+</div>
+</div>
+<div class="stats-grid">
+<article class="stat-card">
+<span>📘</span>
+<div><strong>13</strong><small>Modul Inti</small></div>
+</article>
+<article class="stat-card">
+<span>🧪</span>
+<div><strong>12</strong><small>Praktikum</small></div>
+</article>
+<article class="stat-card">
+<span>⌨️</span>
+<div><strong>50+</strong><small>Perintah CLI</small></div>
+</article>
+<article class="stat-card">
+<span>📊</span>
+<div><strong>100%</strong><small>Target Progres</small></div>
+</article>
+</div>
+<div class="section-heading">
+<div>
+<p class="eyebrow">ALUR BELAJAR</p>
+<h3>Tahapan menjadi administrator Debian dan MikroTik</h3>
+</div>
+</div>
+<div class="roadmap">
+<article>
+<span class="step-number">01</span>
+<h4>Kenali Debian</h4>
+<p>Memahami fungsi server, user root, struktur direktori, dan terminal.</p>
+</article>
+<article>
+<span class="step-number">02</span>
+<h4>Atur Jaringan</h4>
+<p>Mengonfigurasi IP Debian, interface MikroTik, gateway, DNS, dan konektivitas.</p>
+</article>
+<article>
+<span class="step-number">03</span>
+<h4>Pasang Layanan</h4>
+<p>Menginstal layanan Debian serta mengaktifkan DHCP, NAT, dan firewall MikroTik.</p>
+</article>
+<article>
+<span class="step-number">04</span>
+<h4>Uji dan Dokumentasikan</h4>
+<p>Menguji layanan, membaca status, memperbaiki error, dan menyusun laporan.</p>
+</article>
+</div>
+</section>
+<section class="page" id="materi">
+<div class="section-heading">
+<div>
+<p class="eyebrow">MODUL PEMBELAJARAN</p>
+<h3>Materi konfigurasi Debian</h3>
+</div>
+<input id="materialSearch" placeholder="Cari materi..." type="search"/>
+</div>
+
+<div class="learning-progress-panel">
+<div class="progress-copy">
+<span class="progress-kicker">PROGRES MATERI</span>
+<h4>Perkembangan belajar konfigurasi Debian</h4>
+<p>Progres diperbarui otomatis ketika modul ditandai selesai dan tetap tersimpan saat browser ditutup.</p>
+</div>
+<div class="progress-summary">
+<div class="progress-number">
+<strong id="mainProgressText">0%</strong>
+<span id="moduleProgressCount">0 dari 13 modul selesai</span>
+</div>
+<div aria-label="Progres belajar" aria-valuemax="100" aria-valuemin="0" aria-valuenow="0" class="main-progress-track" role="progressbar">
+<div class="main-progress-bar" id="mainProgressBar"></div>
+</div>
+<button class="progress-reset-btn" id="resetProgress" type="button">Reset progres</button>
+</div>
+</div>
+<div class="module-list" id="moduleList">
+<article class="module-card" data-keywords="dasar linux terminal apt direktori pengguna root">
+<div class="module-summary">
+<span class="module-icon">01</span>
+<div>
+<p class="module-label">Modul 1</p>
+<h4>Dasar Debian dan Perintah Linux</h4>
+<p>Mengenal terminal, direktori, pengguna, paket, serta hak akses.</p>
+</div>
+<button aria-label="Buka materi" class="accordion-btn">＋</button>
+</div>
+<div class="module-content">
+<h5>Tujuan Pembelajaran</h5>
+<p>Siswa mampu menggunakan perintah dasar Debian melalui terminal dengan benar.</p>
+<div class="command-grid">
+<code>pwd</code><span>Menampilkan direktori aktif.</span>
+<code>ls -lah</code><span>Melihat isi direktori secara lengkap.</span>
+<code>cd /etc</code><span>Berpindah ke direktori konfigurasi.</span>
+<code>mkdir latihan</code><span>Membuat direktori baru.</span>
+<code>cp sumber tujuan</code><span>Menyalin file atau direktori.</span>
+<code>nano file.conf</code><span>Mengedit file konfigurasi.</span>
+<code>apt update</code><span>Memperbarui indeks paket.</span>
+<code>apt install paket</code><span>Memasang paket aplikasi.</span>
+</div>
+<div class="note-box">
+<strong>Catatan:</strong> Gunakan akun root hanya ketika diperlukan. Perintah administratif
+                dapat dijalankan melalui <code>sudo</code>.
+              </div>
+<label class="complete-check"><input class="module-check" type="checkbox"/> Tandai modul selesai</label>
+</div>
+</article>
+<article class="module-card" data-keywords="ip address statis jaringan interfaces gateway dns enp0s3">
+<div class="module-summary">
+<span class="module-icon">02</span>
+<div>
+<p class="module-label">Modul 2</p>
+<h4>Konfigurasi IP Address Statis</h4>
+<p>Mengatur alamat IP, netmask, gateway, dan DNS pada Debian.</p>
+</div>
+<button aria-label="Buka materi" class="accordion-btn">＋</button>
+</div>
+<div class="module-content">
+<h5>Langkah Konfigurasi</h5>
+<p>Periksa nama antarmuka jaringan:</p>
+<pre><code>ip link
+ip address</code></pre>
+<p>Edit file konfigurasi jaringan:</p>
+<pre><code>nano /etc/network/interfaces</code></pre>
+<p>Contoh konfigurasi IP statis:</p>
+<pre><code>auto enp0s3
+iface enp0s3 inet static
+    address 192.168.10.2
+    netmask 255.255.255.0
+    gateway 192.168.10.1
+    dns-nameservers 8.8.8.8 1.1.1.1</code></pre>
+<p>Terapkan konfigurasi:</p>
+<pre><code>systemctl restart networking
+ip address
+ping -c 4 192.168.10.1</code></pre>
+<div class="warning-box">
+<strong>Perhatian:</strong> Nama interface dapat berbeda, misalnya
+                <code>ens33</code>, <code>enp0s3</code>, atau <code>eth0</code>.
+              </div>
+<label class="complete-check"><input class="module-check" type="checkbox"/> Tandai modul selesai</label>
+</div>
+</article>
+<article class="module-card" data-keywords="ssh remote server openssh port 22">
+<div class="module-summary">
+<span class="module-icon">03</span>
+<div>
+<p class="module-label">Modul 3</p>
+<h4>Konfigurasi SSH Server</h4>
+<p>Mengakses server Debian dari komputer lain secara aman.</p>
+</div>
+<button aria-label="Buka materi" class="accordion-btn">＋</button>
+</div>
+<div class="module-content">
+<h5>Instalasi dan Pengujian</h5>
+<pre><code>apt update
+apt install openssh-server -y
+systemctl enable --now ssh
+systemctl status ssh</code></pre>
+<p>Hubungkan dari komputer klien:</p>
+<pre><code>ssh namauser@192.168.10.2</code></pre>
+<p>File utama konfigurasi SSH:</p>
+<pre><code>/etc/ssh/sshd_config</code></pre>
+<div class="note-box">
+                Setelah mengubah konfigurasi, jalankan
+                <code>systemctl restart ssh</code>.
+              </div>
+<label class="complete-check"><input class="module-check" type="checkbox"/> Tandai modul selesai</label>
+</div>
+</article>
+<article class="module-card" data-keywords="apache web server html http port 80">
+<div class="module-summary">
+<span class="module-icon">04</span>
+<div>
+<p class="module-label">Modul 4</p>
+<h4>Konfigurasi Web Server Apache</h4>
+<p>Menyiapkan halaman web lokal pada server Debian.</p>
+</div>
+<button aria-label="Buka materi" class="accordion-btn">＋</button>
+</div>
+<div class="module-content">
+<h5>Instalasi Apache</h5>
+<pre><code>apt install apache2 -y
+systemctl enable --now apache2
+systemctl status apache2</code></pre>
+<p>Direktori utama dokumen web:</p>
+<pre><code>/var/www/html</code></pre>
+<p>Buat halaman sederhana:</p>
+<pre><code>echo "&lt;h1&gt;Server TKJ Aktif&lt;/h1&gt;" &gt; /var/www/html/index.html</code></pre>
+<p>Akses dari browser klien:</p>
+<pre><code>http://192.168.10.2</code></pre>
+<label class="complete-check"><input class="module-check" type="checkbox"/> Tandai modul selesai</label>
+</div>
+</article>
+<article class="module-card" data-keywords="dhcp isc-dhcp-server alamat otomatis lease range">
+<div class="module-summary">
+<span class="module-icon">05</span>
+<div>
+<p class="module-label">Modul 5</p>
+<h4>Konfigurasi DHCP Server</h4>
+<p>Membagikan alamat IP secara otomatis kepada komputer klien.</p>
+</div>
+<button aria-label="Buka materi" class="accordion-btn">＋</button>
+</div>
+<div class="module-content">
+<h5>Instalasi DHCP</h5>
+<pre><code>apt install isc-dhcp-server -y
+nano /etc/dhcp/dhcpd.conf</code></pre>
+<p>Contoh konfigurasi:</p>
+<pre><code>subnet 192.168.10.0 netmask 255.255.255.0 {
+    range 192.168.10.100 192.168.10.200;
+    option routers 192.168.10.1;
+    option domain-name-servers 192.168.10.2;
+    default-lease-time 600;
+    max-lease-time 7200;
+}</code></pre>
+<p>Tentukan interface layanan pada <code>/etc/default/isc-dhcp-server</code>:</p>
+<pre><code>INTERFACESv4="enp0s3"</code></pre>
+<pre><code>systemctl restart isc-dhcp-server
+systemctl status isc-dhcp-server</code></pre>
+<label class="complete-check"><input class="module-check" type="checkbox"/> Tandai modul selesai</label>
+</div>
+</article>
+<article class="module-card" data-keywords="dns bind9 domain zone forward reverse nslookup">
+<div class="module-summary">
+<span class="module-icon">06</span>
+<div>
+<p class="module-label">Modul 6</p>
+<h4>Konfigurasi DNS Server BIND9</h4>
+<p>Menerjemahkan nama domain lokal menjadi alamat IP.</p>
+</div>
+<button aria-label="Buka materi" class="accordion-btn">＋</button>
+</div>
+<div class="module-content">
+<h5>Instalasi DNS</h5>
+<pre><code>apt install bind9 bind9utils -y</code></pre>
+<p>Tambahkan zona pada <code>/etc/bind/named.conf.local</code>:</p>
+<pre><code>zone "sekolah.local" {
+    type master;
+    file "/etc/bind/db.sekolah";
+};</code></pre>
+<p>Contoh record zona:</p>
+<pre><code>$TTL 604800
+@   IN  SOA ns.sekolah.local. admin.sekolah.local. (
+        2 604800 86400 2419200 604800 )
+@   IN  NS  ns.sekolah.local.
+ns  IN  A   192.168.10.2
+www IN  A   192.168.10.2</code></pre>
+<p>Periksa dan uji:</p>
+<pre><code>named-checkconf
+named-checkzone sekolah.local /etc/bind/db.sekolah
+systemctl restart bind9
+nslookup www.sekolah.local 192.168.10.2</code></pre>
+<label class="complete-check"><input class="module-check" type="checkbox"/> Tandai modul selesai</label>
+</div>
+</article>
+
+<article class="module-card" data-keywords="ftp vsftpd transfer file port 21 upload download user lokal">
+<div class="module-summary">
+<span class="module-icon">07</span>
+<div>
+<p class="module-label">Modul 7</p>
+<h4>Konfigurasi FTP Server dengan vsftpd</h4>
+<p>Menyediakan layanan unggah dan unduh file melalui jaringan menggunakan FTP.</p>
+</div>
+<button aria-label="Buka materi" class="accordion-btn">＋</button>
+</div>
+<div class="module-content">
+<h5>Tujuan Pembelajaran</h5>
+<p>Siswa mampu memasang, mengonfigurasi, menguji, dan mengamankan FTP Server sederhana pada Debian.</p>
+<h5>1. Instalasi vsftpd</h5>
+<pre><code>apt update
+apt install vsftpd -y
+systemctl enable --now vsftpd
+systemctl status vsftpd</code></pre>
+<h5>2. Cadangkan dan edit konfigurasi</h5>
+<pre><code>cp /etc/vsftpd.conf /etc/vsftpd.conf.backup
+nano /etc/vsftpd.conf</code></pre>
+<p>Pastikan parameter berikut aktif:</p>
+<pre><code>listen=NO
+listen_ipv6=YES
+anonymous_enable=NO
+local_enable=YES
+write_enable=YES
+local_umask=022
+chroot_local_user=YES
+allow_writeable_chroot=YES</code></pre>
+<h5>3. Buat pengguna FTP</h5>
+<pre><code>adduser siswaftp
+mkdir -p /home/siswaftp/ftp/upload
+chown -R siswaftp:siswaftp /home/siswaftp/ftp</code></pre>
+<h5>4. Restart dan pengujian</h5>
+<pre><code>systemctl restart vsftpd
+ss -tulpn | grep :21
+ftp 192.168.10.2</code></pre>
+<p>Pengujian juga dapat dilakukan melalui FileZilla dengan host <code>192.168.10.2</code>, port <code>21</code>, serta akun <code>siswaftp</code>.</p>
+<div class="warning-box">
+<strong>Keamanan:</strong> FTP biasa tidak mengenkripsi nama pengguna, kata sandi, dan data.
+      Untuk lingkungan nyata, pertimbangkan FTPS atau SFTP melalui SSH.
+    </div>
+<label class="complete-check"><input class="module-check" type="checkbox"/> Tandai modul selesai</label>
+</div>
+</article>
+
+<article class="module-card" data-keywords="sharing file samba smb windows folder bersama file server chmod smbclient">
+<div class="module-summary">
+<span class="module-icon">08</span>
+<div>
+<p class="module-label">Modul 8</p>
+<h4>Sharing File Debian dengan Samba</h4>
+<p>Membagikan folder Debian agar dapat diakses dari komputer Windows maupun Linux.</p>
+</div>
+<button aria-label="Buka materi" class="accordion-btn">＋</button>
+</div>
+<div class="module-content">
+<h5>Tujuan Pembelajaran</h5>
+<p>Siswa mampu membuat folder bersama, akun Samba, hak akses, dan menguji akses dari komputer klien.</p>
+<h5>1. Instalasi Samba</h5>
+<pre><code>apt update
+apt install samba smbclient -y
+systemctl enable --now smbd
+systemctl status smbd</code></pre>
+<h5>2. Buat folder sharing</h5>
+<pre><code>mkdir -p /srv/samba/tkj
+groupadd sambashare
+chown -R root:sambashare /srv/samba/tkj
+chmod -R 2770 /srv/samba/tkj</code></pre>
+<h5>3. Buat pengguna Samba</h5>
+<pre><code>adduser siswa
+usermod -aG sambashare siswa
+smbpasswd -a siswa</code></pre>
+<h5>4. Tambahkan konfigurasi share</h5>
+<p>Edit file <code>/etc/samba/smb.conf</code>, lalu tambahkan bagian berikut di paling bawah:</p>
+<pre><code>[DataTKJ]
+    path = /srv/samba/tkj
+    browseable = yes
+    read only = no
+    guest ok = no
+    valid users = @sambashare
+    create mask = 0660
+    directory mask = 2770</code></pre>
+<h5>5. Validasi, restart, dan pengujian</h5>
+<pre><code>testparm
+systemctl restart smbd
+smbclient -L //192.168.10.2 -U siswa</code></pre>
+<p>Dari Windows, buka File Explorer lalu masukkan:</p>
+<pre><code>\\192.168.10.2\DataTKJ</code></pre>
+<div class="note-box">
+<strong>Catatan hak akses:</strong> Pengguna harus menjadi anggota grup
+      <code>sambashare</code> dan mempunyai kata sandi Samba agar dapat menulis ke folder.
+    </div>
+<label class="complete-check"><input class="module-check" type="checkbox"/> Tandai modul selesai</label>
+</div>
+</article>
+</div>
+</section>
+
+<section class="page" id="mikrotik">
+<div class="section-heading">
+<div>
+<p class="eyebrow">ROUTEROS &amp; JARINGAN</p>
+<h3>Materi konfigurasi MikroTik</h3>
+</div>
+<input id="mikrotikSearch" placeholder="Cari materi MikroTik..." type="search"/>
+</div>
+
+<div class="mikrotik-intro">
+<article class="mikrotik-overview">
+<span class="pill">📡 MikroTik RouterOS</span>
+<h4>Router sebagai pusat pengatur jaringan</h4>
+<p>MikroTik digunakan untuk menghubungkan jaringan lokal ke internet, membagikan alamat IP, menerapkan keamanan, dan mengatur penggunaan bandwidth. Konfigurasi dapat dilakukan melalui Winbox, WebFig, atau Command Line Interface (CLI).</p>
+<div>
+<span class="mikrotik-tag">Winbox</span>
+<span class="mikrotik-tag">RouterOS CLI</span>
+<span class="mikrotik-tag">DHCP</span>
+<span class="mikrotik-tag">NAT</span>
+<span class="mikrotik-tag">Firewall</span>
+</div>
+</article>
+<article class="topology-card">
+<h4>Contoh topologi dasar laboratorium</h4>
+<div class="topology-flow" aria-label="Internet menuju modem, MikroTik, switch dan komputer klien">
+<span class="topology-node">🌐 Internet</span>
+<span class="topology-arrow">→</span>
+<span class="topology-node">Modem/ONT</span>
+<span class="topology-arrow">→</span>
+<span class="topology-node router">MikroTik</span>
+<span class="topology-arrow">→</span>
+<span class="topology-node">Switch &amp; Klien</span>
+</div>
+<p><strong>Contoh:</strong> <code>ether1</code> sebagai WAN/internet dan <code>ether2</code> sebagai LAN dengan jaringan <code>192.168.20.0/24</code>.</p>
+</article>
+</div>
+
+<div class="module-list" id="mikrotikModuleList">
+<article class="module-card" data-keywords="mikrotik dasar routeros winbox login reset identity interface">
+<div class="module-summary">
+<span class="module-icon">09</span>
+<div>
+<p class="module-label">Modul 9</p>
+<h4>Pengenalan MikroTik, RouterOS, dan Winbox</h4>
+<p>Mengenal fungsi router, metode login, interface, dan konfigurasi awal.</p>
+</div>
+<button aria-label="Buka materi" class="accordion-btn">＋</button>
+</div>
+<div class="module-content">
+<h5>Tujuan Pembelajaran</h5>
+<p>Siswa mampu masuk ke RouterOS, mengenali menu Winbox, mengubah identitas router, dan melakukan pemeriksaan konfigurasi dasar.</p>
+<h5>Konsep Dasar</h5>
+<div class="command-grid">
+<code>RouterOS</code><span>Sistem operasi jaringan yang berjalan pada perangkat MikroTik.</span>
+<code>Winbox</code><span>Aplikasi berbasis GUI untuk mengelola RouterOS.</span>
+<code>WebFig</code><span>Antarmuka konfigurasi RouterOS melalui browser.</span>
+<code>CLI</code><span>Konfigurasi menggunakan perintah pada terminal RouterOS.</span>
+</div>
+<h5>Contoh konfigurasi identitas router</h5>
+<span class="winbox-path">Winbox: System → Identity → Name: R-MIKROTIK-TKJ</span>
+<pre><code>/system identity set name=R-MIKROTIK-TKJ
+/system identity print
+/interface print
+/system resource print</code></pre>
+<div class="note-box"><strong>Contoh hasil:</strong> prompt terminal berubah menjadi <code>[admin@R-MIKROTIK-TKJ] &gt;</code>, sehingga router mudah dikenali.</div>
+<label class="complete-check"><input class="module-check" type="checkbox"/> Tandai modul selesai</label>
+</div>
+</article>
+
+<article class="module-card" data-keywords="mikrotik ip address interface wan lan gateway route dns ping">
+<div class="module-summary">
+<span class="module-icon">10</span>
+<div>
+<p class="module-label">Modul 10</p>
+<h4>Konfigurasi Interface, IP Address, Gateway, dan DNS</h4>
+<p>Menetapkan alamat WAN dan LAN agar router dapat berkomunikasi dengan internet dan klien.</p>
+</div>
+<button aria-label="Buka materi" class="accordion-btn">＋</button>
+</div>
+<div class="module-content">
+<h5>Rencana Alamat Jaringan</h5>
+<table class="config-table">
+<thead><tr><th>Interface</th><th>Fungsi</th><th>Contoh alamat</th></tr></thead>
+<tbody>
+<tr><td><code>ether1</code></td><td>WAN menuju modem</td><td><code>192.168.1.2/24</code></td></tr>
+<tr><td><code>ether2</code></td><td>LAN menuju switch</td><td><code>192.168.20.1/24</code></td></tr>
+</tbody>
+</table>
+<span class="winbox-path">Winbox: IP → Addresses → +</span>
+<pre><code>/interface ethernet set ether1 name=WAN
+/interface ethernet set ether2 name=LAN
+/ip address add address=192.168.1.2/24 interface=WAN comment="IP WAN"
+/ip address add address=192.168.20.1/24 interface=LAN comment="Gateway LAN"
+/ip route add dst-address=0.0.0.0/0 gateway=192.168.1.1
+/ip dns set servers=8.8.8.8,1.1.1.1 allow-remote-requests=yes</code></pre>
+<h5>Pengujian</h5>
+<pre><code>/ip address print
+/ip route print
+/ping 192.168.1.1 count=4
+/ping 8.8.8.8 count=4
+/ping google.com count=4</code></pre>
+<div class="warning-box"><strong>Perhatian:</strong> Sesuaikan gateway WAN dengan alamat modem. Jangan memberikan dua alamat IP dari subnet yang sama pada interface berbeda tanpa perencanaan.</div>
+<label class="complete-check"><input class="module-check" type="checkbox"/> Tandai modul selesai</label>
+</div>
+</article>
+
+<article class="module-card" data-keywords="mikrotik dhcp server pool network lease client otomatis">
+<div class="module-summary">
+<span class="module-icon">11</span>
+<div>
+<p class="module-label">Modul 11</p>
+<h4>Konfigurasi DHCP Server MikroTik</h4>
+<p>Membagikan IP, gateway, dan DNS secara otomatis kepada komputer klien.</p>
+</div>
+<button aria-label="Buka materi" class="accordion-btn">＋</button>
+</div>
+<div class="module-content">
+<h5>Contoh kebutuhan</h5>
+<p>Jaringan LAN menggunakan <code>192.168.20.0/24</code>. Klien memperoleh IP otomatis dari <code>192.168.20.10</code> sampai <code>192.168.20.200</code>.</p>
+<span class="winbox-path">Winbox: IP → DHCP Server → DHCP Setup → pilih interface LAN</span>
+<pre><code>/ip pool add name=pool-lan ranges=192.168.20.10-192.168.20.200
+/ip dhcp-server add name=dhcp-lan interface=LAN address-pool=pool-lan lease-time=1h disabled=no
+/ip dhcp-server network add address=192.168.20.0/24 gateway=192.168.20.1 dns-server=192.168.20.1,8.8.8.8</code></pre>
+<h5>Melihat klien yang memperoleh IP</h5>
+<pre><code>/ip dhcp-server print
+/ip dhcp-server lease print
+/ip pool print</code></pre>
+<div class="note-box"><strong>Contoh:</strong> Komputer siswa yang diatur “Obtain an IP address automatically” akan menerima IP seperti <code>192.168.20.10/24</code>, gateway <code>192.168.20.1</code>, dan DNS dari MikroTik.</div>
+<label class="complete-check"><input class="module-check" type="checkbox"/> Tandai modul selesai</label>
+</div>
+</article>
+
+<article class="module-card" data-keywords="mikrotik nat masquerade internet gateway firewall srcnat wan lan">
+<div class="module-summary">
+<span class="module-icon">12</span>
+<div>
+<p class="module-label">Modul 12</p>
+<h4>Konfigurasi NAT Masquerade untuk Akses Internet</h4>
+<p>Menerjemahkan alamat IP privat klien agar dapat mengakses internet melalui interface WAN.</p>
+</div>
+<button aria-label="Buka materi" class="accordion-btn">＋</button>
+</div>
+<div class="module-content">
+<h5>Konsep NAT</h5>
+<p>Alamat privat <code>192.168.20.0/24</code> tidak dirutekan langsung di internet. Aturan <em>srcnat masquerade</em> mengganti alamat sumber klien dengan alamat WAN router.</p>
+<span class="winbox-path">Winbox: IP → Firewall → NAT → + → Chain: srcnat → Out. Interface: WAN → Action: masquerade</span>
+<pre><code>/ip firewall nat add chain=srcnat out-interface=WAN action=masquerade comment="Internet untuk LAN"
+/ip firewall nat print</code></pre>
+<h5>Urutan pengujian dari komputer klien</h5>
+<pre><code>ping 192.168.20.1
+ping 8.8.8.8
+ping google.com</code></pre>
+<div class="warning-box"><strong>Analisis gangguan:</strong> Jika gateway dapat diping tetapi <code>8.8.8.8</code> gagal, periksa route dan NAT. Jika <code>8.8.8.8</code> berhasil tetapi nama domain gagal, periksa DNS.</div>
+<label class="complete-check"><input class="module-check" type="checkbox"/> Tandai modul selesai</label>
+</div>
+</article>
+
+<article class="module-card" data-keywords="mikrotik firewall filter input forward established invalid drop simple queue bandwidth limit keamanan">
+<div class="module-summary">
+<span class="module-icon">13</span>
+<div>
+<p class="module-label">Modul 13</p>
+<h4>Firewall Dasar dan Manajemen Bandwidth</h4>
+<p>Melindungi router dari akses yang tidak diizinkan dan membatasi bandwidth klien.</p>
+</div>
+<button aria-label="Buka materi" class="accordion-btn">＋</button>
+</div>
+<div class="module-content">
+<h5>Firewall input dasar</h5>
+<p>Chain <code>input</code> melindungi router. Chain <code>forward</code> mengatur lalu lintas yang melewati router.</p>
+<pre><code>/ip firewall filter add chain=input connection-state=established,related action=accept comment="Terima koneksi terkait"
+/ip firewall filter add chain=input connection-state=invalid action=drop comment="Buang koneksi invalid"
+/ip firewall filter add chain=input protocol=icmp action=accept comment="Izinkan ping"
+/ip firewall filter add chain=input in-interface=LAN action=accept comment="Kelola router dari LAN"
+/ip firewall filter add chain=input action=drop comment="Tolak akses lain ke router"</code></pre>
+<div class="warning-box"><strong>Penting:</strong> Urutan rule dibaca dari atas ke bawah. Pastikan rule yang mengizinkan akses dari LAN dibuat sebelum rule <code>drop</code>.</div>
+<h5>Contoh Simple Queue</h5>
+<span class="winbox-path">Winbox: Queues → Simple Queues → +</span>
+<pre><code>/queue simple add name="PC-LAB-01" target=192.168.20.10/32 max-limit=5M/5M
+/queue simple print stats</code></pre>
+<p>Perintah tersebut membatasi unggah dan unduh komputer <code>192.168.20.10</code> maksimal <code>5 Mbps</code>.</p>
+<label class="complete-check"><input class="module-check" type="checkbox"/> Tandai modul selesai</label>
+</div>
+</article>
+</div>
+</section>
+<section class="page" id="terminal">
+<div class="section-heading">
+<div>
+<p class="eyebrow">SIMULASI INTERAKTIF</p>
+<h3>Terminal Lab Debian</h3>
+</div>
+</div>
+<div class="lab-layout">
+<div class="sim-terminal">
+<div class="terminal-head">
+<span></span><span></span><span></span>
+<small>Terminal Simulasi</small>
+</div>
+<div class="terminal-output" id="terminalOutput">
+<p>DebianLab Terminal Simulator</p>
+<p>Ketik <strong>help</strong> untuk melihat daftar perintah.</p>
+</div>
+<form class="terminal-input-row" id="terminalForm">
+<label for="terminalInput">root@debian:~#</label>
+<input autocomplete="off" autofocus="" id="terminalInput" spellcheck="false"/>
+</form>
+</div>
+<aside class="command-help">
+<h4>Misi Terminal</h4>
+<p>Jalankan perintah berikut secara berurutan:</p>
+<ol>
+<li><code>ip address</code></li>
+<li><code>apt update</code></li>
+<li><code>apt install apache2</code></li>
+<li><code>systemctl start apache2</code></li>
+<li><code>systemctl status apache2</code></li>
+</ol>
+<div class="mission-status">
+<span>Misi selesai</span>
+<strong id="missionCount">0/5</strong>
+</div>
+<button class="secondary-btn" id="resetTerminal">Reset Terminal</button>
+</aside>
+</div>
+</section>
+<section class="page" id="praktikum">
+<div class="section-heading">
+<div>
+<p class="eyebrow">LEMBAR KERJA SISWA</p>
+<h3>Praktikum konfigurasi server</h3>
+</div>
+</div>
+<div class="practice-grid">
+<article class="practice-card">
+<span class="difficulty easy">Dasar</span>
+<h4>Praktikum 1: Identitas dan Jaringan Server</h4>
+<p>Konfigurasikan hostname dan IP statis pada Debian.</p>
+<ul>
+<li>Hostname: <code>server-tkj</code></li>
+<li>IP: <code>192.168.10.2/24</code></li>
+<li>Gateway: <code>192.168.10.1</code></li>
+</ul>
+<details>
+<summary>Lihat langkah kerja</summary>
+<ol>
+<li>Periksa interface menggunakan <code>ip link</code>.</li>
+<li>Edit <code>/etc/network/interfaces</code>.</li>
+<li>Restart layanan jaringan.</li>
+<li>Uji dengan <code>ping</code>.</li>
+</ol>
+</details>
+</article>
+<article class="practice-card">
+<span class="difficulty easy">Dasar</span>
+<h4>Praktikum 2: Remote SSH</h4>
+<p>Pasang SSH Server dan lakukan remote dari komputer klien.</p>
+<ul>
+<li>Port standar: <code>22</code></li>
+<li>Akun klien: <code>siswa</code></li>
+<li>Target: <code>192.168.10.2</code></li>
+</ul>
+<details>
+<summary>Lihat langkah kerja</summary>
+<ol>
+<li>Instal paket <code>openssh-server</code>.</li>
+<li>Aktifkan layanan SSH.</li>
+<li>Uji koneksi dari klien.</li>
+</ol>
+</details>
+</article>
+<article class="practice-card">
+<span class="difficulty medium">Menengah</span>
+<h4>Praktikum 3: Web Server Lokal</h4>
+<p>Pasang Apache dan tampilkan halaman profil sekolah.</p>
+<ul>
+<li>Dokumen: <code>/var/www/html/index.html</code></li>
+<li>Layanan: <code>apache2</code></li>
+<li>Protokol: HTTP</li>
+</ul>
+<details>
+<summary>Lihat langkah kerja</summary>
+<ol>
+<li>Instal Apache.</li>
+<li>Edit halaman index.</li>
+<li>Akses melalui IP server.</li>
+</ol>
+</details>
+</article>
+<article class="practice-card">
+<span class="difficulty medium">Menengah</span>
+<h4>Praktikum 4: DHCP Server</h4>
+<p>Bagikan IP otomatis untuk 20 komputer klien.</p>
+<ul>
+<li>Range: <code>192.168.10.100-120</code></li>
+<li>Lease: <code>600</code> detik</li>
+<li>DNS: <code>192.168.10.2</code></li>
+</ul>
+<details>
+<summary>Lihat langkah kerja</summary>
+<ol>
+<li>Pasang ISC DHCP Server.</li>
+<li>Atur subnet dan range.</li>
+<li>Pilih interface layanan.</li>
+<li>Uji dari klien.</li>
+</ol>
+</details>
+</article>
+<article class="practice-card">
+<span class="difficulty hard">Lanjutan</span>
+<h4>Praktikum 5: DNS Lokal</h4>
+<p>Buat domain <code>labtkj.local</code> untuk web server.</p>
+<ul>
+<li>NS: <code>ns.labtkj.local</code></li>
+<li>WWW: <code>192.168.10.2</code></li>
+<li>Paket: <code>bind9</code></li>
+</ul>
+<details>
+<summary>Lihat langkah kerja</summary>
+<ol>
+<li>Buat zona forward.</li>
+<li>Tambahkan record NS dan A.</li>
+<li>Validasi zona.</li>
+<li>Uji dengan <code>nslookup</code>.</li>
+</ol>
+</details>
+</article>
+<article class="practice-card">
+<span class="difficulty medium">Menengah</span>
+<h4>Praktikum 6: FTP Server</h4>
+<p>Buat layanan transfer file untuk pengguna lokal menggunakan vsftpd.</p>
+<ul>
+<li>Pengguna: <code>siswaftp</code></li>
+<li>Folder unggah: <code>/home/siswaftp/ftp/upload</code></li>
+<li>Port layanan: <code>21</code></li>
+</ul>
+<details>
+<summary>Lihat langkah kerja</summary>
+<ol>
+<li>Pasang dan aktifkan vsftpd.</li>
+<li>Aktifkan login pengguna lokal dan izin menulis.</li>
+<li>Buat akun serta folder unggah.</li>
+<li>Uji proses unggah dan unduh dari klien.</li>
+</ol>
+</details>
+</article><article class="practice-card">
+<span class="difficulty hard">Lanjutan</span>
+<h4>Praktikum 7: Sharing File Samba</h4>
+<p>Buat folder bersama yang hanya dapat diakses oleh anggota grup TKJ.</p>
+<ul>
+<li>Nama share: <code>DataTKJ</code></li>
+<li>Folder: <code>/srv/samba/tkj</code></li>
+<li>Grup: <code>sambashare</code></li>
+</ul>
+<details>
+<summary>Lihat langkah kerja</summary>
+<ol>
+<li>Pasang Samba dan buat folder sharing.</li>
+<li>Atur grup serta hak akses folder.</li>
+<li>Tambahkan akun Samba.</li>
+<li>Validasi dengan <code>testparm</code>.</li>
+<li>Uji akses baca dan tulis dari Windows.</li>
+</ol>
+</details>
+</article>
+<article class="practice-card">
+<span class="difficulty easy">Dasar</span>
+<h4>Praktikum 8: Konfigurasi Awal MikroTik</h4>
+<p>Masuk melalui Winbox dan siapkan identitas serta nama interface router.</p>
+<ul>
+<li>Identity: <code>R-MIKROTIK-TKJ</code></li>
+<li><code>ether1</code>: WAN</li>
+<li><code>ether2</code>: LAN</li>
+</ul>
+<details><summary>Lihat langkah kerja</summary><ol>
+<li>Hubungkan laptop ke MikroTik dan buka Winbox.</li>
+<li>Login menggunakan MAC Address atau IP router.</li>
+<li>Ubah identity melalui menu System.</li>
+<li>Ubah nama interface WAN dan LAN.</li>
+<li>Simpan tangkapan layar konfigurasi.</li>
+</ol></details>
+</article>
+<article class="practice-card">
+<span class="difficulty medium">Menengah</span>
+<h4>Praktikum 9: IP dan DHCP MikroTik</h4>
+<p>Buat jaringan LAN yang memberikan IP otomatis kepada komputer siswa.</p>
+<ul>
+<li>Gateway LAN: <code>192.168.20.1/24</code></li>
+<li>Pool: <code>192.168.20.10-200</code></li>
+<li>Lease time: <code>1h</code></li>
+</ul>
+<details><summary>Lihat langkah kerja</summary><ol>
+<li>Tambahkan IP pada interface LAN.</li>
+<li>Buat IP Pool.</li>
+<li>Buat DHCP Server dan DHCP Network.</li>
+<li>Atur klien memperoleh IP otomatis.</li>
+<li>Periksa daftar DHCP Lease.</li>
+</ol></details>
+</article>
+<article class="practice-card">
+<span class="difficulty medium">Menengah</span>
+<h4>Praktikum 10: Internet Gateway dan NAT</h4>
+<p>Hubungkan LAN ke internet melalui interface WAN.</p>
+<ul>
+<li>Default route: <code>0.0.0.0/0</code></li>
+<li>DNS: <code>8.8.8.8</code></li>
+<li>NAT: <code>masquerade</code></li>
+</ul>
+<details><summary>Lihat langkah kerja</summary><ol>
+<li>Konfigurasikan IP WAN dan default gateway.</li>
+<li>Atur DNS RouterOS.</li>
+<li>Buat rule NAT masquerade.</li>
+<li>Uji ping IP publik dan nama domain.</li>
+<li>Catat hasil pengujian.</li>
+</ol></details>
+</article>
+<article class="practice-card">
+<span class="difficulty hard">Lanjutan</span>
+<h4>Praktikum 11: Firewall Dasar MikroTik</h4>
+<p>Buat rule yang mengizinkan pengelolaan router dari LAN dan menolak akses lain.</p>
+<ul>
+<li>Accept: <code>established,related</code></li>
+<li>Drop: <code>invalid</code></li>
+<li>Management: hanya dari LAN</li>
+</ul>
+<details><summary>Lihat langkah kerja</summary><ol>
+<li>Buat rule accept koneksi established dan related.</li>
+<li>Buat rule drop koneksi invalid.</li>
+<li>Izinkan ICMP dan akses dari LAN.</li>
+<li>Tambahkan rule drop terakhir.</li>
+<li>Uji Winbox dari LAN dan WAN.</li>
+</ol></details>
+</article>
+<article class="practice-card">
+<span class="difficulty hard">Lanjutan</span>
+<h4>Praktikum 12: Pembatasan Bandwidth</h4>
+<p>Batasi bandwidth satu komputer laboratorium menggunakan Simple Queue.</p>
+<ul>
+<li>Target: <code>192.168.20.10/32</code></li>
+<li>Upload: <code>5M</code></li>
+<li>Download: <code>5M</code></li>
+</ul>
+<details><summary>Lihat langkah kerja</summary><ol>
+<li>Pastikan klien menggunakan IP tetap atau static lease.</li>
+<li>Buat Simple Queue untuk target klien.</li>
+<li>Lakukan pengujian kecepatan.</li>
+<li>Amati statistik traffic pada queue.</li>
+<li>Bandingkan hasil sebelum dan sesudah limit.</li>
+</ol></details>
+</article>
+</div>
+<div class="assessment-box">
+<h4>Format Penilaian Praktikum</h4>
+<div class="rubric-grid">
+<span>Persiapan alat</span><strong>10%</strong>
+<span>Ketepatan konfigurasi</span><strong>40%</strong>
+<span>Pengujian layanan</span><strong>25%</strong>
+<span>Analisis kesalahan</span><strong>15%</strong>
+<span>Laporan praktikum</span><strong>10%</strong>
+</div>
+</div>
+</section>
+
+<section class="page" id="glosarium">
+<div class="section-heading">
+<div>
+<p class="eyebrow">ISTILAH PENTING</p>
+<h3>Glosarium Debian dan jaringan</h3>
+</div>
+<input id="glossarySearch" placeholder="Cari istilah..." type="search"/>
+</div>
+<div class="glossary-grid" id="glossaryGrid">
+<article data-term="apt package manager"><h4>APT</h4><p>Pengelola paket pada Debian untuk memasang, memperbarui, dan menghapus aplikasi.</p></article>
+<article data-term="root administrator"><h4>Root</h4><p>Pengguna dengan hak akses administratif tertinggi pada sistem Linux.</p></article>
+<article data-term="daemon service layanan"><h4>Service</h4><p>Program yang berjalan di latar belakang untuk menyediakan fungsi tertentu.</p></article>
+<article data-term="ip address alamat jaringan"><h4>IP Address</h4><p>Alamat logis yang digunakan perangkat untuk berkomunikasi dalam jaringan.</p></article>
+<article data-term="gateway router"><h4>Gateway</h4><p>Perangkat atau alamat tujuan untuk menghubungkan jaringan lokal ke jaringan lain.</p></article>
+<article data-term="dns domain name system"><h4>DNS</h4><p>Layanan yang menerjemahkan nama domain menjadi alamat IP.</p></article>
+<article data-term="dhcp dynamic host configuration"><h4>DHCP</h4><p>Layanan yang membagikan konfigurasi IP kepada klien secara otomatis.</p></article>
+<article data-term="ssh secure shell remote"><h4>SSH</h4><p>Protokol aman untuk mengakses dan mengelola komputer dari jarak jauh.</p></article>
+<article data-term="apache http web server"><h4>Apache</h4><p>Aplikasi web server untuk melayani halaman web melalui HTTP atau HTTPS.</p></article>
+<article data-term="bind9 name server"><h4>BIND9</h4><p>Perangkat lunak DNS Server yang umum digunakan pada sistem Linux.</p></article>
+<article data-term="interface antarmuka enp0s3 eth0"><h4>Interface</h4><p>Antarmuka jaringan fisik atau virtual pada sistem operasi.</p></article>
+<article data-term="subnet netmask"><h4>Subnet</h4><p>Pembagian jaringan IP menjadi jaringan-jaringan yang lebih kecil.</p></article>
+<article data-term="ftp file transfer protocol port 21"><h4>FTP</h4><p>Protokol untuk mengunggah dan mengunduh file antara klien dan server melalui jaringan.</p></article><article data-term="vsftpd very secure ftp daemon"><h4>vsftpd</h4><p>Aplikasi FTP Server yang ringan dan banyak digunakan pada sistem Debian.</p></article><article data-term="samba smb cifs sharing windows"><h4>Samba</h4><p>Layanan berbagi file dan printer antara Linux, Windows, dan perangkat lain melalui protokol SMB.</p></article><article data-term="smb server message block"><h4>SMB</h4><p>Protokol jaringan yang digunakan untuk mengakses file, folder, dan printer bersama.</p></article>
+<article data-term="mikrotik routeros router jaringan"><h4>MikroTik</h4><p>Perangkat dan sistem jaringan yang digunakan untuk routing, firewall, hotspot, VPN, dan manajemen bandwidth.</p></article>
+<article data-term="routeros sistem operasi mikrotik"><h4>RouterOS</h4><p>Sistem operasi milik MikroTik yang menyediakan fitur routing dan pengelolaan jaringan.</p></article>
+<article data-term="winbox aplikasi konfigurasi gui mikrotik"><h4>Winbox</h4><p>Aplikasi GUI untuk mengonfigurasi perangkat MikroTik melalui IP Address atau MAC Address.</p></article>
+<article data-term="bridge gabung interface switch"><h4>Bridge</h4><p>Interface logis untuk menggabungkan beberapa port agar berada dalam satu segmen jaringan.</p></article>
+<article data-term="nat network address translation masquerade"><h4>NAT</h4><p>Proses menerjemahkan alamat IP, umumnya agar jaringan privat dapat mengakses internet.</p></article>
+<article data-term="masquerade srcnat internet"><h4>Masquerade</h4><p>Aksi NAT dinamis yang menggunakan alamat IP pada interface keluar sebagai alamat sumber.</p></article>
+<article data-term="firewall filter keamanan input forward"><h4>Firewall Filter</h4><p>Aturan untuk menerima, menolak, atau membuang lalu lintas berdasarkan kriteria tertentu.</p></article>
+<article data-term="simple queue bandwidth limit mikrotik"><h4>Simple Queue</h4><p>Fitur RouterOS untuk membatasi kecepatan unggah dan unduh target jaringan secara sederhana.</p></article></div>
+</section>
+<footer>
+<p>DebianLab • Media Pembelajaran Debian dan MikroTik untuk SMK TKJ</p>
+<p>Gunakan pada laboratorium virtual, RouterOS CHR, maupun perangkat server dan router nyata.</p>
+</footer>
+</main>
+</div>
+<button aria-label="Kembali ke atas" class="back-to-top" id="backToTop">↑</button>
+<script>
+(() => {
+  "use strict";
+
+  function ready(callback) {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", callback);
+    } else {
+      callback();
+    }
+  }
+
+  ready(() => {
+    /* =========================
+       Penyimpanan aman
+       ========================= */
+    const storage = {
+      get(key, fallback = null) {
+        try {
+          const value = window.localStorage.getItem(key);
+          return value === null ? fallback : value;
+        } catch (error) {
+          console.warn("Penyimpanan browser tidak tersedia:", error);
+          return fallback;
+        }
+      },
+      set(key, value) {
+        try {
+          window.localStorage.setItem(key, value);
+        } catch (error) {
+          console.warn("Progres tidak dapat disimpan:", error);
+        }
+      },
+      remove(key) {
+        try {
+          window.localStorage.removeItem(key);
+        } catch (error) {
+          console.warn("Progres tidak dapat dihapus:", error);
+        }
+      }
+    };
+
+    /* =========================
+       Navigasi halaman
+       ========================= */
+    const navItems = document.querySelectorAll(".nav-item");
+    const pages = document.querySelectorAll(".page");
+    const pageTitle = document.getElementById("pageTitle");
+    const sidebar = document.getElementById("sidebar");
+    const menuToggle = document.getElementById("menuToggle");
+
+    function openPage(target) {
+      pages.forEach((page) => {
+        page.classList.toggle("active", page.id === target);
+      });
+
+      navItems.forEach((item) => {
+        item.classList.toggle("active", item.dataset.target === target);
+      });
+
+      const activeItem = Array.from(navItems).find(
+        (item) => item.dataset.target === target
+      );
+
+      if (activeItem && pageTitle) {
+        pageTitle.textContent = activeItem.innerText.trim();
+      }
+
+      if (sidebar) {
+        sidebar.classList.remove("open");
+      }
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      // Pastikan elemen halaman baru terlihat meski IntersectionObserver tidak memicu.
+      window.setTimeout(() => {
+        const activePage = document.getElementById(target);
+        if (activePage) {
+          activePage.querySelectorAll(".reveal-effect").forEach((element) => {
+            element.classList.add("revealed");
+          });
+        }
+      }, 120);
+    }
+
+    navItems.forEach((item) => {
+      item.addEventListener("click", () => openPage(item.dataset.target));
+    });
+
+    document.querySelectorAll(".jump-btn").forEach((button) => {
+      button.addEventListener("click", () => openPage(button.dataset.target));
+    });
+
+    if (menuToggle && sidebar) {
+      menuToggle.addEventListener("click", () => {
+        sidebar.classList.toggle("open");
+      });
+    }
+
+    /* =========================
+       Accordion materi
+       ========================= */
+    document.querySelectorAll(".module-summary").forEach((summary) => {
+      summary.addEventListener("click", (event) => {
+        if (event.target.matches("input")) return;
+
+        const card = summary.closest(".module-card");
+        if (!card) return;
+
+        card.classList.toggle("open");
+        const accordionButton = card.querySelector(".accordion-btn");
+        if (accordionButton) {
+          accordionButton.textContent = card.classList.contains("open") ? "−" : "＋";
+        }
+      });
+    });
+
+    /* =========================
+       Pencarian materi
+       ========================= */
+    const materialSearch = document.getElementById("materialSearch");
+    if (materialSearch) {
+      materialSearch.addEventListener("input", () => {
+        const keyword = materialSearch.value.toLowerCase().trim();
+
+        document.querySelectorAll(".module-card").forEach((card) => {
+          const keywords = card.dataset.keywords || "";
+          const haystack = `${card.textContent} ${keywords}`.toLowerCase();
+          card.classList.toggle("hidden", !haystack.includes(keyword));
+        });
+      });
+    }
+
+    const mikrotikSearch = document.getElementById("mikrotikSearch");
+    if (mikrotikSearch) {
+      mikrotikSearch.addEventListener("input", () => {
+        const keyword = mikrotikSearch.value.toLowerCase().trim();
+
+        document.querySelectorAll("#mikrotikModuleList .module-card").forEach((card) => {
+          const keywords = card.dataset.keywords || "";
+          const haystack = `${card.textContent} ${keywords}`.toLowerCase();
+          card.classList.toggle("hidden", !haystack.includes(keyword));
+        });
+      });
+    }
+
+    const glossarySearch = document.getElementById("glossarySearch");
+    if (glossarySearch) {
+      glossarySearch.addEventListener("input", () => {
+        const keyword = glossarySearch.value.toLowerCase().trim();
+
+        document.querySelectorAll("#glossaryGrid article").forEach((item) => {
+          const terms = item.dataset.term || "";
+          const haystack = `${item.textContent} ${terms}`.toLowerCase();
+          item.classList.toggle("hidden", !haystack.includes(keyword));
+        });
+      });
+    }
+
+    /* =========================
+       Progress bar
+       ========================= */
+    const progressBar = document.getElementById("progressBar");
+    const progressText = document.getElementById("progressText");
+    const mainProgressBar = document.getElementById("mainProgressBar");
+    const mainProgressText = document.getElementById("mainProgressText");
+    const moduleProgressCount = document.getElementById("moduleProgressCount");
+    const resetProgress = document.getElementById("resetProgress");
+    const mainProgressTrack = document.querySelector(".main-progress-track");
+    const moduleChecks = document.querySelectorAll(".module-check");
+
+    function readSavedProgress() {
+      try {
+        const parsed = JSON.parse(storage.get("debianLabProgress", "[]"));
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (error) {
+        console.warn("Data progres rusak dan direset:", error);
+        storage.remove("debianLabProgress");
+        return [];
+      }
+    }
+
+    function updateProgress() {
+      const completed = Array.from(moduleChecks).filter(
+        (checkbox) => checkbox.checked
+      ).length;
+      const total = moduleChecks.length;
+      const percent = total ? Math.round((completed / total) * 100) : 0;
+
+      if (progressBar) progressBar.style.width = `${percent}%`;
+      if (progressText) progressText.textContent = `${percent}%`;
+      if (mainProgressBar) mainProgressBar.style.width = `${percent}%`;
+      if (mainProgressText) mainProgressText.textContent = `${percent}%`;
+
+      if (moduleProgressCount) {
+        moduleProgressCount.textContent = `${completed} dari ${total} modul selesai`;
+      }
+
+      if (mainProgressTrack) {
+        mainProgressTrack.setAttribute("aria-valuenow", String(percent));
+      }
+
+      document.querySelectorAll(".module-card").forEach((card) => {
+        const checkbox = card.querySelector(".module-check");
+        card.classList.toggle(
+          "completed",
+          Boolean(checkbox && checkbox.checked)
+        );
+      });
+
+      storage.set(
+        "debianLabProgress",
+        JSON.stringify(
+          Array.from(moduleChecks).map((checkbox) => checkbox.checked)
+        )
+      );
+
+      return { completed, total, percent };
+    }
+
+    const savedProgress = readSavedProgress();
+    moduleChecks.forEach((checkbox, index) => {
+      checkbox.checked = Boolean(savedProgress[index]);
+      checkbox.addEventListener("change", () => {
+        const result = updateProgress();
+        handleProgressCelebration(result.completed, result.total);
+      });
+    });
+
+    if (resetProgress) {
+      resetProgress.addEventListener("click", () => {
+        moduleChecks.forEach((checkbox) => {
+          checkbox.checked = false;
+        });
+        storage.remove("debianLabProgress");
+        storage.remove("debianLabCelebrated");
+        progressCelebrated = false;
+        updateProgress();
+      });
+    }
+
+    updateProgress();
+
+    /* =========================
+       Terminal simulasi
+       ========================= */
+    const terminalOutput = document.getElementById("terminalOutput");
+    const terminalForm = document.getElementById("terminalForm");
+    const terminalInput = document.getElementById("terminalInput");
+    const missionCount = document.getElementById("missionCount");
+    const resetTerminal = document.getElementById("resetTerminal");
+
+    const missionCommands = [
+      "ip address",
+      "apt update",
+      "apt install apache2",
+      "systemctl start apache2",
+      "systemctl status apache2"
+    ];
+
+    let completedMissions = new Set();
+    let installedApache = false;
+    let apacheRunning = false;
+
+    const commandResponses = {
+      help: `Perintah yang tersedia:
+help, clear, pwd, ls, whoami, hostname, ip address,
+apt update, apt install apache2,
+systemctl start apache2, systemctl status apache2,
+ping 192.168.10.1`,
+      pwd: "/root",
+      ls: "latihan  konfigurasi.txt  laporan-praktikum",
+      whoami: "root",
+      hostname: "debian-server",
+      "ip address": `2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP>
+    inet 192.168.10.2/24 brd 192.168.10.255 scope global enp0s3`,
+      "apt update": `Hit:1 http://deb.debian.org/debian stable InRelease
+Reading package lists... Done
+All packages are up to date.`,
+      "ping 192.168.10.1": `PING 192.168.10.1: 56 data bytes
+64 bytes from 192.168.10.1: icmp_seq=1 ttl=64 time=0.632 ms
+64 bytes from 192.168.10.1: icmp_seq=2 ttl=64 time=0.581 ms
+2 packets transmitted, 2 received, 0% packet loss`
+    };
+
+    function appendTerminal(text, className = "") {
+      if (!terminalOutput) return;
+
+      String(text).split("\n").forEach((line) => {
+        const paragraph = document.createElement("p");
+        paragraph.textContent = line || " ";
+        if (className) paragraph.className = className;
+        terminalOutput.appendChild(paragraph);
+      });
+
+      terminalOutput.scrollTop = terminalOutput.scrollHeight;
+    }
+
+    function updateMission(command) {
+      const index = missionCommands.indexOf(command);
+      const prerequisitesMet =
+        index === 0 ||
+        missionCommands
+          .slice(0, index)
+          .every((item) => completedMissions.has(item));
+
+      if (index >= 0 && prerequisitesMet) {
+        completedMissions.add(command);
+
+        if (missionCount) {
+          missionCount.textContent = `${completedMissions.size}/5`;
+        }
+
+        if (completedMissions.size === 5) {
+          appendTerminal(
+            "Misi berhasil! Web server Apache sudah aktif.",
+            "terminal-success"
+          );
+        }
+      }
+    }
+
+    if (terminalForm && terminalInput) {
+      terminalForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const command = terminalInput.value.trim().toLowerCase();
+        if (!command) return;
+
+        appendTerminal(`root@debian:~# ${command}`);
+        terminalInput.value = "";
+
+        if (command === "clear") {
+          if (terminalOutput) terminalOutput.innerHTML = "";
+          return;
+        }
+
+        if (command === "apt install apache2") {
+          installedApache = true;
+          appendTerminal("Apache2 berhasil dipasang.");
+          updateMission(command);
+          return;
+        }
+
+        if (command === "systemctl start apache2") {
+          if (!installedApache) {
+            appendTerminal(
+              "Unit apache2.service tidak ditemukan. Instal Apache terlebih dahulu."
+            );
+            return;
+          }
+
+          apacheRunning = true;
+          appendTerminal("Apache2 berhasil dijalankan.");
+          updateMission(command);
+          return;
+        }
+
+        if (command === "systemctl status apache2") {
+          if (!installedApache) {
+            appendTerminal("Unit apache2.service could not be found.");
+            return;
+          }
+
+          appendTerminal(
+            apacheRunning
+              ? "● apache2.service - The Apache HTTP Server\n   Active: active (running)"
+              : "○ apache2.service - The Apache HTTP Server\n   Active: inactive (dead)"
+          );
+
+          if (apacheRunning) updateMission(command);
+          return;
+        }
+
+        if (Object.prototype.hasOwnProperty.call(commandResponses, command)) {
+          appendTerminal(commandResponses[command]);
+          updateMission(command);
+        } else {
+          appendTerminal(`bash: ${command}: command not found`);
+        }
+      });
+    }
+
+    if (resetTerminal) {
+      resetTerminal.addEventListener("click", () => {
+        completedMissions = new Set();
+        installedApache = false;
+        apacheRunning = false;
+
+        if (missionCount) missionCount.textContent = "0/5";
+
+        if (terminalOutput) {
+          terminalOutput.innerHTML = `
+            <p>DebianLab Terminal Simulator</p>
+            <p>Ketik <strong>help</strong> untuk melihat daftar perintah.</p>
+          `;
+        }
+
+        if (terminalInput) terminalInput.focus();
+      });
+    }
+
+    /* =========================
+       Efek teks mengetik
+       ========================= */
+    const typingText = document.getElementById("typingText");
+    const typingMessages = [
+      "Belajar server dari nol.",
+      "Praktik konfigurasi jaringan.",
+      "Bangun FTP dan Samba Server.",
+      "Konfigurasikan DHCP, NAT, dan firewall MikroTik.",
+      "Siap menjadi administrator Debian dan MikroTik."
+    ];
+
+    let typingMessageIndex = 0;
+    let typingCharIndex = 0;
+    let typingDeleting = false;
+
+    function runTypingEffect() {
+      if (!typingText) return;
+
+      const currentText = typingMessages[typingMessageIndex];
+
+      if (!typingDeleting) {
+        typingCharIndex += 1;
+        typingText.textContent = currentText.slice(0, typingCharIndex);
+
+        if (typingCharIndex === currentText.length) {
+          typingDeleting = true;
+          window.setTimeout(runTypingEffect, 1300);
+          return;
+        }
+      } else {
+        typingCharIndex -= 1;
+        typingText.textContent = currentText.slice(0, typingCharIndex);
+
+        if (typingCharIndex === 0) {
+          typingDeleting = false;
+          typingMessageIndex =
+            (typingMessageIndex + 1) % typingMessages.length;
+        }
+      }
+
+      window.setTimeout(runTypingEffect, typingDeleting ? 38 : 68);
+    }
+
+    runTypingEffect();
+
+    /* =========================
+       Reveal animation
+       ========================= */
+    const revealTargets = document.querySelectorAll(
+      ".stat-card, .roadmap article, .module-card, .practice-card, " +
+      ".glossary-grid article, .assessment-box, .learning-progress-panel"
+    );
+
+    revealTargets.forEach((element, index) => {
+      element.classList.add("reveal-effect");
+      element.style.transitionDelay = `${Math.min(index % 4, 3) * 70}ms`;
+    });
+
+    if ("IntersectionObserver" in window) {
+      const revealObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("revealed");
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.08 }
+      );
+
+      revealTargets.forEach((element) => revealObserver.observe(element));
+    } else {
+      revealTargets.forEach((element) => element.classList.add("revealed"));
+    }
+
+    // Tampilkan elemen halaman aktif secara langsung.
+    document
+      .querySelectorAll(".page.active .reveal-effect")
+      .forEach((element) => element.classList.add("revealed"));
+
+    /* =========================
+       Efek ripple
+       ========================= */
+    document
+      .querySelectorAll(
+        ".primary-btn, .secondary-btn, .accordion-btn, " +
+        ".nav-item, .progress-reset-btn"
+      )
+      .forEach((button) => {
+        button.addEventListener("click", (event) => {
+          const circle = document.createElement("span");
+          const rect = button.getBoundingClientRect();
+          const size = Math.max(rect.width, rect.height);
+
+          circle.className = "ripple-wave";
+          circle.style.width = `${size}px`;
+          circle.style.height = `${size}px`;
+          circle.style.left = `${event.clientX - rect.left - size / 2}px`;
+          circle.style.top = `${event.clientY - rect.top - size / 2}px`;
+
+          button.appendChild(circle);
+          window.setTimeout(() => circle.remove(), 700);
+        });
+      });
+
+    /* =========================
+       Tombol kembali ke atas
+       ========================= */
+    const backToTop = document.getElementById("backToTop");
+
+    window.addEventListener("scroll", () => {
+      if (backToTop) {
+        backToTop.classList.toggle("show", window.scrollY > 420);
+      }
+    });
+
+    if (backToTop) {
+      backToTop.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    }
+
+    /* =========================
+       Confetti progres 100%
+       ========================= */
+    let progressCelebrated =
+      storage.get("debianLabCelebrated", "false") === "true";
+
+    function launchConfetti() {
+      const colors = [
+        "#a80030",
+        "#ff7da3",
+        "#60a5fa",
+        "#4ade80",
+        "#ffd166"
+      ];
+
+      for (let index = 0; index < 70; index += 1) {
+        const piece = document.createElement("span");
+        piece.className = "confetti-piece";
+        piece.style.left = `${Math.random() * 100}vw`;
+        piece.style.background =
+          colors[Math.floor(Math.random() * colors.length)];
+        piece.style.setProperty(
+          "--drift",
+          `${(Math.random() - 0.5) * 260}px`
+        );
+        piece.style.animationDelay = `${Math.random() * 0.45}s`;
+        piece.style.animationDuration = `${1.3 + Math.random() * 1.1}s`;
+
+        document.body.appendChild(piece);
+        window.setTimeout(() => piece.remove(), 2800);
+      }
+    }
+
+    function handleProgressCelebration(completed, total) {
+      if (total > 0 && completed === total && !progressCelebrated) {
+        launchConfetti();
+        progressCelebrated = true;
+        storage.set("debianLabCelebrated", "true");
+      }
+
+      if (completed < total) {
+        progressCelebrated = false;
+        storage.remove("debianLabCelebrated");
+      }
+    }
+
+    /* =========================
+       Animasi angka statistik
+       ========================= */
+    document.querySelectorAll(".stat-card strong").forEach((counter) => {
+      const raw = counter.textContent.trim();
+      const numeric = Number.parseInt(raw, 10);
+
+      if (Number.isNaN(numeric)) return;
+
+      const suffix = raw.replace(String(numeric), "");
+      let value = 0;
+      const steps = 28;
+      const increment = numeric / steps;
+
+      const timer = window.setInterval(() => {
+        value += increment;
+
+        if (value >= numeric) {
+          value = numeric;
+          window.clearInterval(timer);
+        }
+
+        counter.textContent = `${Math.round(value)}${suffix}`;
+      }, 32);
+    });
+
+    console.info("DebianLab JavaScript aktif.");
+  });
+})();
+
+</script>
+</body>
+</html>
