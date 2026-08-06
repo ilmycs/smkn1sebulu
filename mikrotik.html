@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Web pembelajaran MTCNA MikroTik RouterOS v7: materi, praktik, progress, dan kuis.">
+  <title>SMK Negeri 1 Sebulu — MikroTik RouterOS v7</title>
+  <style>
+    :root{
+      --bg:#07111f;
+      --surface:#0d1b2d;
+      --surface-2:#12243a;
+      --surface-3:#18304b;
+      --text:#eef6ff;
+      --muted:#9db0c8;
+      --primary:#59d4ff;
+      --primary-2:#7c5cff;
+      --success:#38d996;
+      --warning:#ffc857;
+      --danger:#ff6b7a;
+      --border:rgba(255,255,255,.10);
+      --shadow:0 18px 50px rgba(0,0,0,.28);
+      --radius:18px;
+      --sidebar:300px;
+    }
+    html[data-theme="light"]{
+      --bg:#f3f7fb;
+      --surface:#ffffff;
+      --surface-2:#f0f5fa;
+      --surface-3:#e6eef7;
+      --text:#132238;
+      --muted:#5f7188;
+      --border:rgba(19,34,56,.12);
+      --shadow:0 18px 45px rgba(35,64,96,.12);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:
+        radial-gradient(circle at 12% 8%,rgba(89,212,255,.12),transparent 28%),
+        radial-gradient(circle at 88% 14%,rgba(124,92,255,.13),transparent 30%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.65;
+    }
+    button,input{font:inherit}
+    a{color:var(--primary)}
+    code,kbd,pre{font-family:"Cascadia Code","JetBrains Mono",Consolas,monospace}
+    .skip-link{position:fixed;left:14px;top:-60px;background:var(--primary);color:#06121d;padding:10px 14px;border-radius:10px;z-index:9999}
+    .skip-link:focus{top:14px}
+    .app{min-height:100vh}
+    .sidebar{
+      position:fixed;inset:0 auto 0 0;width:var(--sidebar);padding:22px 18px;
+      background:rgba(7,17,31,.92);backdrop-filter:blur(18px);
+      border-right:1px solid var(--border);overflow-y:auto;z-index:30;
+    }
+    html[data-theme="light"] .sidebar{background:rgba(255,255,255,.92)}
+    .brand{display:flex;align-items:center;gap:12px;padding:6px 8px 18px}
+    .brand-mark{
+      width:46px;height:46px;border-radius:14px;
+      background:linear-gradient(135deg,var(--primary),var(--primary-2));
+      display:grid;place-items:center;color:#07111f;font-weight:900;box-shadow:0 10px 30px rgba(89,212,255,.25)
+    }
+    .brand h1{font-size:1.05rem;margin:0}.brand small{color:var(--muted)}
+    .search-wrap{position:relative;margin:4px 4px 16px}
+    .search-wrap span{position:absolute;left:13px;top:10px;color:var(--muted)}
+    #search{
+      width:100%;padding:10px 12px 10px 38px;border:1px solid var(--border);
+      background:var(--surface-2);color:var(--text);border-radius:12px;outline:none
+    }
+    #search:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(89,212,255,.12)}
+    .nav-title{padding:12px 10px 6px;color:var(--muted);text-transform:uppercase;font-size:.72rem;letter-spacing:.12em}
+    .nav-list{display:flex;flex-direction:column;gap:4px}
+    .nav-link{
+      border:0;background:transparent;color:var(--muted);text-align:left;width:100%;
+      padding:10px 11px;border-radius:11px;cursor:pointer;display:flex;gap:10px;align-items:center
+    }
+    .nav-link:hover,.nav-link.active{background:var(--surface-2);color:var(--text)}
+    .nav-link.active{box-shadow:inset 3px 0 0 var(--primary)}
+    .nav-num{width:25px;height:25px;border-radius:8px;background:var(--surface-3);display:grid;place-items:center;font-size:.75rem}
+    .side-progress{margin:20px 5px 10px;padding:14px;border:1px solid var(--border);background:var(--surface);border-radius:15px}
+    .progress-row{display:flex;justify-content:space-between;gap:10px;font-size:.83rem}
+    .progress-track{height:8px;background:var(--surface-3);border-radius:99px;margin-top:9px;overflow:hidden}
+    .progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--success));transition:.3s}
+    .main{margin-left:var(--sidebar);min-height:100vh}
+    .topbar{
+      position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
+      padding:14px clamp(18px,4vw,52px);background:rgba(7,17,31,.72);
+      backdrop-filter:blur(18px);border-bottom:1px solid var(--border)
+    }
+    html[data-theme="light"] .topbar{background:rgba(243,247,251,.82)}
+    .topbar-left{display:flex;align-items:center;gap:12px}.eyebrow{font-size:.78rem;color:var(--muted)}
+    .topbar-title{font-weight:750}.topbar-actions{display:flex;gap:8px}
+    .icon-btn{
+      width:42px;height:42px;border:1px solid var(--border);background:var(--surface);
+      color:var(--text);border-radius:12px;cursor:pointer;display:grid;place-items:center
+    }
+    .menu-btn{display:none}
+    .content{max-width:1250px;margin:0 auto;padding:34px clamp(18px,4vw,54px) 80px}
+    .hero{
+      position:relative;overflow:hidden;padding:clamp(26px,5vw,58px);
+      background:linear-gradient(135deg,rgba(89,212,255,.12),rgba(124,92,255,.15)),var(--surface);
+      border:1px solid var(--border);border-radius:28px;box-shadow:var(--shadow)
+    }
+    .hero::after{content:"";position:absolute;width:320px;height:320px;border-radius:50%;right:-100px;top:-120px;background:rgba(89,212,255,.16);filter:blur(12px)}
+    .badge{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:999px;background:rgba(56,217,150,.12);color:var(--success);border:1px solid rgba(56,217,150,.25);font-size:.82rem}
+    .hero h2{font-size:clamp(2rem,5vw,4.4rem);line-height:1.05;margin:18px 0 14px;max-width:820px;letter-spacing:-.045em}
+    .gradient-text{background:linear-gradient(90deg,var(--primary),#bfaaff);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .hero p{max-width:760px;color:var(--muted);font-size:1.04rem}
+    .hero-actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:24px}
+    .btn{
+      border:1px solid var(--border);border-radius:12px;padding:11px 16px;font-weight:700;
+      cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px
+    }
+    .btn-primary{background:linear-gradient(135deg,var(--primary),#8fe7ff);color:#07111f;border:0}
+    .btn-secondary{background:var(--surface-2);color:var(--text)}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:22px 0 38px}
+    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px}
+    .stat-card strong{display:block;font-size:1.55rem}.stat-card span{color:var(--muted);font-size:.86rem}
+    .module{
+      display:none;animation:fade .25s ease;background:var(--surface);border:1px solid var(--border);
+      border-radius:22px;padding:clamp(20px,4vw,38px);box-shadow:var(--shadow);margin-top:24px
+    }
+    .module.active{display:block}
+    @keyframes fade{from{opacity:.2;transform:translateY(6px)}to{opacity:1;transform:none}}
+    .module-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:24px}
+    .module-tag{color:var(--primary);font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em}
+    .module h2{font-size:clamp(1.75rem,3vw,2.6rem);line-height:1.15;margin:7px 0 10px}
+    .module-intro{color:var(--muted);max-width:820px}
+    .complete-btn{white-space:nowrap}
+    h3{margin-top:30px;font-size:1.35rem}h4{margin-top:23px}
+    .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+    .card,.callout,.lab-step{
+      background:var(--surface-2);border:1px solid var(--border);border-radius:16px;padding:18px
+    }
+    .card h4{margin:0 0 7px}.card p{margin:0;color:var(--muted)}
+    .callout{border-left:4px solid var(--primary);margin:18px 0}
+    .callout.warning{border-left-color:var(--warning)}.callout.danger{border-left-color:var(--danger)}.callout.success{border-left-color:var(--success)}
+    .callout strong{display:block;margin-bottom:3px}
+    .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:15px;margin:16px 0}
+    table{width:100%;border-collapse:collapse;min-width:640px}
+    th,td{padding:12px 14px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+    th{background:var(--surface-2);font-size:.83rem;color:var(--muted)}tr:last-child td{border-bottom:0}
+    .code-block{position:relative;margin:15px 0;border-radius:15px;overflow:hidden;border:1px solid var(--border);background:#06101b}
+    .code-top{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:#0c1b2c;color:#9db0c8;font-size:.78rem}
+    .copy-btn{border:1px solid rgba(255,255,255,.14);background:#12263e;color:#dcecff;border-radius:8px;padding:5px 9px;cursor:pointer}
+    pre{margin:0;padding:17px;overflow-x:auto;color:#d8f3ff;font-size:.89rem;line-height:1.65}
+    .cmd{color:#64dfff}.arg{color:#ffd479}.comment{color:#7189a2}
+    .topology{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:12px;align-items:center;margin:20px 0}
+    .device{text-align:center;padding:18px 8px;border:1px solid var(--border);background:var(--surface-2);border-radius:16px}
+    .device .ico{font-size:2rem}.link{color:var(--primary);font-weight:900}
+    .check-list{display:grid;gap:8px;margin:15px 0}
+    .check-item{display:flex;gap:10px;align-items:flex-start;padding:10px;border-radius:11px;background:var(--surface-2)}
+    .check-item input{margin-top:5px;accent-color:var(--success)}
+    .lab{border:1px dashed rgba(89,212,255,.38);padding:20px;border-radius:18px;margin-top:18px}
+    .lab-head{display:flex;align-items:center;gap:10px}.lab-number{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:var(--primary);color:#07111f;font-weight:900}
+    .lab-steps{display:grid;gap:11px;margin-top:15px}.lab-step{display:flex;gap:12px}.step-num{font-weight:900;color:var(--primary)}
+    .quiz-question{padding:18px;border:1px solid var(--border);border-radius:16px;margin:14px 0;background:var(--surface-2)}
+    .quiz-question p{font-weight:750;margin-top:0}.option{display:block;padding:9px 10px;border-radius:10px;cursor:pointer}.option:hover{background:var(--surface-3)}
+    .option input{accent-color:var(--primary);margin-right:8px}
+    .quiz-result{display:none;margin-top:18px;padding:18px;border-radius:16px;background:var(--surface-2);border:1px solid var(--border)}
+    .resource-list{display:grid;gap:10px}.resource-link{display:flex;justify-content:space-between;gap:20px;align-items:center;padding:14px;border:1px solid var(--border);background:var(--surface-2);border-radius:13px;text-decoration:none;color:var(--text)}
+    .resource-link span{color:var(--muted);font-size:.86rem}
+    .search-result-info{display:none;padding:12px 15px;border-radius:12px;background:var(--surface-2);border:1px solid var(--border);margin-bottom:18px}
+    mark{background:rgba(255,200,87,.25);color:var(--text);border-radius:3px;padding:0 2px}
+    footer{color:var(--muted);text-align:center;padding:24px 12px;font-size:.83rem}
+    .toast{position:fixed;right:20px;bottom:20px;background:var(--surface);border:1px solid var(--border);padding:12px 15px;border-radius:12px;box-shadow:var(--shadow);transform:translateY(90px);opacity:0;transition:.25s;z-index:99}
+    .toast.show{transform:none;opacity:1}
+    @media(max-width:1000px){
+      .sidebar{transform:translateX(-105%);transition:.25s}.sidebar.open{transform:none}
+      .main{margin-left:0}.menu-btn{display:grid}.stats{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:720px){
+      .grid-2,.grid-3{grid-template-columns:1fr}.module-head{flex-direction:column}.stats{grid-template-columns:1fr 1fr}
+      .topology{grid-template-columns:1fr}.link{transform:rotate(90deg)}.topbar-title{font-size:.9rem}
+    }
+    @media(max-width:460px){.stats{grid-template-columns:1fr}.hero h2{font-size:2.3rem}.content{padding-left:14px;padding-right:14px}}
+  </style>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Lewati ke konten</a>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">MT</div>
+      <div><h1>SMK Negeri 1 Sebulu</h1><small>RouterOS v7 • Bahasa Indonesia</small></div>
+    </div>
+
+    <div class="search-wrap">
+      <span>⌕</span>
+      <input id="search" type="search" placeholder="Cari materi atau perintah…" aria-label="Cari materi">
+    </div>
+
+    <div class="nav-title">Materi Pembelajaran</div>
+    <nav class="nav-list" id="navList">
+      <button class="nav-link active" data-target="dashboard"><span class="nav-num">⌂</span>Dashboard</button>
+      <button class="nav-link" data-target="modul1"><span class="nav-num">01</span>Dasar MTCNA</button>
+      <button class="nav-link" data-target="modul2"><span class="nav-num">02</span>RouterOS & Akses</button>
+      <button class="nav-link" data-target="modul3"><span class="nav-num">03</span>IP & Subnetting</button>
+      <button class="nav-link" data-target="modul4"><span class="nav-num">04</span>Bridge & DHCP</button>
+      <button class="nav-link" data-target="modul5"><span class="nav-num">05</span>Routing</button>
+      <button class="nav-link" data-target="modul6"><span class="nav-num">06</span>Firewall & NAT</button>
+      <button class="nav-link" data-target="modul7"><span class="nav-num">07</span>Wireless</button>
+      <button class="nav-link" data-target="modul8"><span class="nav-num">08</span>QoS & Queue</button>
+      <button class="nav-link" data-target="modul9"><span class="nav-num">09</span>PPP & Tunnel</button>
+      <button class="nav-link" data-target="modul10"><span class="nav-num">10</span>Tools & Security</button>
+      <button class="nav-link" data-target="praktikum"><span class="nav-num">⚙</span>Praktikum Terpadu</button>
+      <button class="nav-link" data-target="quiz"><span class="nav-num">?</span>Uji Kompetensi</button>
+      <button class="nav-link" data-target="referensi"><span class="nav-num">↗</span>Referensi</button>
+    </nav>
+
+    <div class="side-progress">
+      <div class="progress-row"><span>Progress Belajar</span><strong id="progressText">0%</strong></div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <small id="progressCount" style="color:var(--muted)">0 dari 10 modul selesai</small>
+    </div>
+  </aside>
+
+  <main class="main" id="main-content">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="icon-btn menu-btn" id="menuBtn" aria-label="Buka navigasi">☰</button>
+        <div><div class="eyebrow">Kelas Jaringan Komputer</div><div class="topbar-title" id="pageTitle">Dashboard MTCNA</div></div>
+      </div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="resetBtn" title="Reset progress" aria-label="Reset progress">↻</button>
+        <button class="icon-btn" id="themeBtn" title="Ubah tema" aria-label="Ubah tema">☀</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="search-result-info" id="searchInfo"></div>
+
+      <section class="module active" id="dashboard" data-title="Dashboard MTCNA">
+        <div class="hero">
+          <span class="badge">● Siap Belajar RouterOS v7</span>
+          <h2>Kuasai dasar jaringan dengan <span class="gradient-text">MikroTik MTCNA</span></h2>
+          <p>Materi mandiri untuk memahami konfigurasi RouterOS dari nol: IP address, DHCP, routing, firewall, NAT, wireless, bandwidth management, tunnel, monitoring, dan troubleshooting.</p>
+          <div class="hero-actions">
+            <button class="btn btn-primary jump-btn" data-target="modul1">Mulai Modul 1 →</button>
+            <button class="btn btn-secondary jump-btn" data-target="praktikum">Lihat Praktikum</button>
+          </div>
+        </div>
+
+        <div class="stats">
+          <div class="stat-card"><strong>10</strong><span>Modul inti</span></div>
+          <div class="stat-card"><strong>30+</strong><span>Contoh perintah CLI</span></div>
+          <div class="stat-card"><strong>5</strong><span>Praktikum terpadu</span></div>
+          <div class="stat-card"><strong>15</strong><span>Soal evaluasi</span></div>
+        </div>
+
+        <h3>Capaian Pembelajaran</h3>
+        <div class="grid-3">
+          <div class="card"><h4>Konfigurasi Dasar</h4><p>Mengakses RouterOS, mengatur identitas, user, interface, IP, DNS, waktu, dan layanan.</p></div>
+          <div class="card"><h4>Layanan Jaringan</h4><p>Membangun bridge, DHCP server/client, routing statis, NAT internet, dan koneksi wireless.</p></div>
+          <div class="card"><h4>Operasi & Keamanan</h4><p>Menerapkan firewall dasar, pembatasan bandwidth, backup, monitoring, serta troubleshooting.</p></div>
+        </div>
+
+        <h3>Topologi Laboratorium</h3>
+        <div class="topology">
+          <div class="device"><div class="ico">🌐</div><strong>Internet/ISP</strong><br><small>Gateway dinamis</small></div>
+          <div class="link">⟷</div>
+          <div class="device"><div class="ico">▣</div><strong>MikroTik</strong><br><small>ether1=WAN • bridge=LAN</small></div>
+          <div class="link">⟷</div>
+          <div class="device"><div class="ico">💻</div><strong>Client LAN</strong><br><small>192.168.10.0/24</small></div>
+        </div>
+        <div class="callout warning"><strong>Catatan kelas</strong>Materi ini adalah bahan belajar mandiri, bukan pengganti pelatihan resmi atau ujian sertifikasi yang diselenggarakan trainer resmi MikroTik.</div>
+      </section>
+
+      <section class="module searchable" id="modul1" data-title="Modul 1 — Dasar MTCNA">
+        <div class="module-head">
+          <div><div class="module-tag">Modul 01</div><h2>Dasar MTCNA dan Ekosistem MikroTik</h2><p class="module-intro">Mengenal fungsi router, produk MikroTik, RouterBOARD, RouterOS, lisensi, antarmuka, serta gambaran kerja administrator jaringan.</p></div>
+          <button class="btn btn-secondary complete-btn" data-module="modul1">Tandai Selesai</button>
+        </div>
+        <h3>1. Peran Router dalam Jaringan</h3>
+        <div class="grid-2">
+          <div class="card"><h4>Routing Layer 3</h4><p>Meneruskan paket antarjaringan berdasarkan alamat IP dan tabel routing.</p></div>
+          <div class="card"><h4>Network Services</h4><p>Menyediakan DHCP, DNS cache, firewall, NAT, VPN, hotspot, QoS, dan monitoring.</p></div>
+        </div>
+        <h3>2. Produk MikroTik</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Komponen</th><th>Penjelasan</th><th>Contoh penggunaan</th></tr></thead>
+          <tbody>
+            <tr><td>RouterOS</td><td>Sistem operasi jaringan milik MikroTik.</td><td>Router, firewall, AP, VPN gateway.</td></tr>
+            <tr><td>RouterBOARD</td><td>Perangkat keras yang umumnya telah dilengkapi RouterOS.</td><td>hAP, RB, CCR, CRS.</td></tr>
+            <tr><td>CHR</td><td>Cloud Hosted Router untuk lingkungan virtual.</td><td>VMware, Hyper-V, Proxmox, cloud.</td></tr>
+            <tr><td>SwOS</td><td>Sistem operasi ringan untuk perangkat switch tertentu.</td><td>Konfigurasi VLAN dan switching.</td></tr>
+          </tbody>
+        </table></div>
+        <h3>3. Metode Akses RouterOS</h3>
+        <div class="grid-3">
+          <div class="card"><h4>WinBox</h4><p>GUI khusus MikroTik. Dapat mengakses melalui IP atau MAC address.</p></div>
+          <div class="card"><h4>WebFig</h4><p>Antarmuka web melalui HTTP/HTTPS untuk konfigurasi menggunakan browser.</p></div>
+          <div class="card"><h4>Terminal</h4><p>CLI melalui WinBox, SSH, serial console, atau terminal lokal.</p></div>
+        </div>
+        <div class="callout success"><strong>Prinsip penting</strong>Pelajari GUI dan CLI bersama-sama. WinBox memudahkan eksplorasi menu, sedangkan CLI mempercepat konfigurasi berulang dan dokumentasi.</div>
+        <h3>Checklist Pemahaman</h3>
+        <div class="check-list">
+          <label class="check-item"><input type="checkbox"> Saya dapat menjelaskan perbedaan RouterOS dan RouterBOARD.</label>
+          <label class="check-item"><input type="checkbox"> Saya mengenal WinBox, WebFig, SSH, dan MAC access.</label>
+          <label class="check-item"><input type="checkbox"> Saya memahami fungsi router sebagai penghubung antarjaringan.</label>
+        </div>
+      </section>
+
+      <section class="module searchable" id="modul2" data-title="Modul 2 — RouterOS & Akses">
+        <div class="module-head">
+          <div><div class="module-tag">Modul 02</div><h2>RouterOS, Akses, dan Konfigurasi Awal</h2><p class="module-intro">Menyiapkan router dengan identitas yang jelas, akun administrator aman, pembaruan sistem, waktu, DNS, dan layanan manajemen.</p></div>
+          <button class="btn btn-secondary complete-btn" data-module="modul2">Tandai Selesai</button>
+        </div>
+        <h3>Urutan Konfigurasi Awal</h3>
+        <div class="grid-2">
+          <div class="card"><h4>1. Login & Identifikasi</h4><p>Hubungkan laptop ke port LAN, akses WinBox, lalu periksa model, arsitektur, dan versi RouterOS.</p></div>
+          <div class="card"><h4>2. Amankan Akses</h4><p>Buat user baru, gunakan kata sandi kuat, batasi service, lalu nonaktifkan akun yang tidak diperlukan.</p></div>
+          <div class="card"><h4>3. Update & Waktu</h4><p>Periksa channel update, paket, firmware RouterBOARD, zona waktu, serta NTP client.</p></div>
+          <div class="card"><h4>4. Backup</h4><p>Simpan backup biner dan export teks sebelum perubahan besar.</p></div>
+        </div>
+        <h3>Perintah Dasar CLI</h3>
+        <div class="code-block"><div class="code-top"><span>Terminal — identitas dan informasi sistem</span><button class="copy-btn">Salin</button></div><pre><code><span class="cmd">/system identity set</span> <span class="arg">name=R1-LAB</span>
+<span class="cmd">/system resource print</span>
+<span class="cmd">/system package print</span>
+<span class="cmd">/interface print</span>
+<span class="cmd">/ip address print</span>
+<span class="cmd">/ip route print</span></code></pre></div>
+        <div class="code-block"><div class="code-top"><span>Terminal — user dan service</span><button class="copy-btn">Salin</button></div><pre><code><span class="comment"># Buat administrator baru sebelum mengubah admin bawaan</span>
+<span class="cmd">/user add</span> <span class="arg">name=netadmin group=full password="GantiDenganPasswordKuat"</span>
+<span class="cmd">/ip service disable</span> <span class="arg">telnet,ftp,www,api,api-ssl</span>
+<span class="cmd">/ip service set</span> <span class="arg">ssh address=192.168.10.0/24</span>
+<span class="cmd">/ip service set</span> <span class="arg">winbox address=192.168.10.0/24</span></code></pre></div>
+        <h3>Backup dan Export</h3>
+        <div class="code-block"><div class="code-top"><span>Terminal — simpan konfigurasi</span><button class="copy-btn">Salin</button></div><pre><code><span class="cmd">/system backup save</span> <span class="arg">name=backup-awal password="PasswordBackup"</span>
+<span class="cmd">/export file=konfigurasi-awal</span>
+<span class="comment"># Backup biner cocok untuk perangkat yang sama; export berupa skrip teks.</span></code></pre></div>
+        <div class="callout danger"><strong>Jangan terkunci dari router</strong>Saat membatasi service atau menambah firewall input, gunakan Safe Mode di terminal dan pastikan jalur akses lokal tetap tersedia.</div>
+      </section>
+
+      <section class="module searchable" id="modul3" data-title="Modul 3 — IP & Subnetting">
+        <div class="module-head">
+          <div><div class="module-tag">Modul 03</div><h2>IP Address, Subnetting, ARP, dan DNS</h2><p class="module-intro">Memahami alamat IPv4, prefix, network, broadcast, gateway, DNS, serta penerapannya pada interface RouterOS.</p></div>
+          <button class="btn btn-secondary complete-btn" data-module="modul3">Tandai Selesai</button>
+        </div>
+        <h3>Konsep IPv4</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Prefix</th><th>Subnet mask</th><th>Total alamat</th><th>Host usable umum</th></tr></thead>
+          <tbody>
+            <tr><td>/24</td><td>255.255.255.0</td><td>256</td><td>254</td></tr>
+            <tr><td>/25</td><td>255.255.255.128</td><td>128</td><td>126</td></tr>
+            <tr><td>/26</td><td>255.255.255.192</td><td>64</td><td>62</td></tr>
+            <tr><td>/27</td><td>255.255.255.224</td><td>32</td><td>30</td></tr>
+            <tr><td>/28</td><td>255.255.255.240</td><td>16</td><td>14</td></tr>
+            <tr><td>/30</td><td>255.255.255.252</td><td>4</td><td>2</td></tr>
+          </tbody>
+        </table></div>
+        <h3>Contoh Perencanaan</h3>
+        <div class="callout"><strong>LAN: 192.168.10.0/24</strong>Network: 192.168.10.0 • Gateway: 192.168.10.1 • Pool DHCP: 192.168.10.10–192.168.10.200 • Broadcast: 192.168.10.255.</div>
+        <div class="code-block"><div class="code-top"><span>Terminal — IP address dan DNS</span><button class="copy-btn">Salin</button></div><pre><code><span class="cmd">/ip address add</span> <span class="arg">address=192.168.10.1/24 interface=bridge-LAN comment="Gateway LAN"</span>
+<span class="cmd">/ip dns set</span> <span class="arg">servers=1.1.1.1,8.8.8.8 allow-remote-requests=yes</span>
+<span class="cmd">/ip address print detail</span>
+<span class="cmd">/ip arp print</span>
+<span class="cmd">/ip dns cache print</span></code></pre></div>
+        <h3>Alur Resolusi DNS</h3>
+        <div class="grid-3">
+          <div class="card"><h4>1. Client bertanya</h4><p>Client meminta alamat IP sebuah nama domain kepada DNS resolver.</p></div>
+          <div class="card"><h4>2. Router memeriksa cache</h4><p>Router menjawab dari cache atau meneruskan permintaan ke DNS upstream.</p></div>
+          <div class="card"><h4>3. Client terhubung</h4><p>Setelah memperoleh IP tujuan, client membangun koneksi ke layanan tersebut.</p></div>
+        </div>
+        <div class="callout warning"><strong>Keamanan DNS</strong><code>allow-remote-requests=yes</code> sebaiknya hanya dapat diakses dari jaringan tepercaya melalui aturan firewall input.</div>
+      </section>
+
+      <section class="module searchable" id="modul4" data-title="Modul 4 — Bridge & DHCP">
+        <div class="module-head">
+          <div><div class="module-tag">Modul 04</div><h2>Bridge, Switching, DHCP Client dan DHCP Server</h2><p class="module-intro">Menggabungkan port LAN pada Layer 2, memperoleh alamat WAN otomatis, dan mendistribusikan konfigurasi IP kepada client.</p></div>
+          <button class="btn btn-secondary complete-btn" data-module="modul4">Tandai Selesai</button>
+        </div>
+        <h3>Membuat Bridge LAN</h3>
+        <div class="code-block"><div class="code-top"><span>Terminal — bridge LAN</span><button class="copy-btn">Salin</button></div><pre><code><span class="cmd">/interface bridge add</span> <span class="arg">name=bridge-LAN protocol-mode=rstp</span>
+<span class="cmd">/interface bridge port add</span> <span class="arg">bridge=bridge-LAN interface=ether2</span>
+<span class="cmd">/interface bridge port add</span> <span class="arg">bridge=bridge-LAN interface=ether3</span>
+<span class="cmd">/interface bridge port add</span> <span class="arg">bridge=bridge-LAN interface=ether4</span>
+<span class="cmd">/interface bridge port add</span> <span class="arg">bridge=bridge-LAN interface=ether5</span>
+<span class="cmd">/ip address add</span> <span class="arg">address=192.168.10.1/24 interface=bridge-LAN</span></code></pre></div>
+        <h3>WAN sebagai DHCP Client</h3>
+        <div class="code-block"><div class="code-top"><span>Terminal — DHCP client WAN</span><button class="copy-btn">Salin</button></div><pre><code><span class="cmd">/ip dhcp-client add</span> <span class="arg">interface=ether1 add-default-route=yes use-peer-dns=no disabled=no</span>
+<span class="cmd">/ip dhcp-client print detail</span></code></pre></div>
+        <h3>DHCP Server LAN</h3>
+        <div class="code-block"><div class="code-top"><span>Terminal — konfigurasi manual DHCP server</span><button class="copy-btn">Salin</button></div><pre><code><span class="cmd">/ip pool add</span> <span class="arg">name=pool-LAN ranges=192.168.10.10-192.168.10.200</span>
+<span class="cmd">/ip dhcp-server add</span> <span class="arg">name=dhcp-LAN interface=bridge-LAN address-pool=pool-LAN lease-time=8h disabled=no</span>
+<span class="cmd">/ip dhcp-server network add</span> <span class="arg">address=192.168.10.0/24 gateway=192.168.10.1 dns-server=192.168.10.1</span>
+<span class="cmd">/ip dhcp-server lease print</span></code></pre></div>
+        <h3>Proses DORA</h3>
+        <div class="grid-2">
+          <div class="card"><h4>Discover</h4><p>Client mencari DHCP server melalui broadcast.</p></div>
+          <div class="card"><h4>Offer</h4><p>Server menawarkan alamat IP dan parameter jaringan.</p></div>
+          <div class="card"><h4>Request</h4><p>Client meminta penggunaan alamat yang ditawarkan.</p></div>
+          <div class="card"><h4>Acknowledge</h4><p>Server mengonfirmasi lease dan client mulai menggunakan IP.</p></div>
+        </div>
+        <div class="callout"><strong>Alternatif GUI</strong>Gunakan menu <b>IP → DHCP Server → DHCP Setup</b> untuk wizard otomatis, lalu periksa kembali pool, network, gateway, dan DNS.</div>
+      </section>
+
+      <section class="module searchable" id="modul5" data-title="Modul 5 — Routing">
+        <div class="module-head">
+          <div><div class="module-tag">Modul 05</div><h2>Routing Statis dan Tabel Routing</h2><p class="module-intro">Membaca route aktif, connected route, default route, distance, gateway, dan membangun komunikasi antarrouter.</p></div>
+          <button class="btn btn-secondary complete-btn" data-module="modul5">Tandai Selesai</button>
+        </div>
+        <h3>Jenis Route yang Umum</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Jenis</th><th>Sumber</th><th>Contoh</th></tr></thead>
+          <tbody>
+            <tr><td>Connected</td><td>Terbentuk otomatis saat IP aktif pada interface.</td><td>192.168.10.0/24 reachable via bridge-LAN.</td></tr>
+            <tr><td>Static</td><td>Dibuat administrator.</td><td>10.20.0.0/24 via 172.16.0.2.</td></tr>
+            <tr><td>Dynamic</td><td>Diperoleh dari DHCP, PPP, atau protokol routing.</td><td>Default route dari ISP.</td></tr>
+            <tr><td>Default</td><td>Tujuan untuk jaringan yang tidak lebih spesifik.</td><td>0.0.0.0/0 via gateway ISP.</td></tr>
+          </tbody>
+        </table></div>
+        <h3>Contoh Dua Router</h3>
+        <div class="topology">
+          <div class="device"><div class="ico">💻</div><strong>LAN A</strong><br><small>192.168.10.0/24</small></div>
+          <div class="link">⟷</div>
+          <div class="device"><div class="ico">▣ ▣</div><strong>R1 — R2</strong><br><small>172.16.0.0/30</small></div>
+          <div class="link">⟷</div>
+          <div class="device"><div class="ico">💻</div><strong>LAN B</strong><br><small>192.168.20.0/24</small></div>
+        </div>
+        <div class="code-block"><div class="code-top"><span>R1 — route menuju LAN B</span><button class="copy-btn">Salin</button></div><pre><code><span class="cmd">/ip route add</span> <span class="arg">dst-address=192.168.20.0/24 gateway=172.16.0.2 comment="Ke LAN-B"</span></code></pre></div>
+        <div class="code-block"><div class="code-top"><span>R2 — route menuju LAN A</span><button class="copy-btn">Salin</button></div><pre><code><span class="cmd">/ip route add</span> <span class="arg">dst-address=192.168.10.0/24 gateway=172.16.0.1 comment="Ke LAN-A"</span></code></pre></div>
+        <h3>Distance dan Pemilihan Route</h3>
+        <p>Router memilih prefix paling spesifik terlebih dahulu. Jika beberapa route memiliki prefix yang sama, route dengan distance lebih rendah biasanya lebih diprioritaskan.</p>
+        <div class="code-block"><div class="code-top"><span>Terminal — route utama dan cadangan</span><button class="copy-btn">Salin</button></div><pre><code><span class="cmd">/ip route add</span> <span class="arg">dst-address=0.0.0.0/0 gateway=10.10.10.1 distance=1 comment="ISP utama"</span>
+<span class="cmd">/ip route add</span> <span class="arg">dst-address=0.0.0.0/0 gateway=10.20.20.1 distance=2 comment="ISP cadangan"</span></code></pre></div>
+        <div class="callout warning"><strong>Routing dua arah</strong>Ping akan berhasil apabila route pergi dan route kembali tersedia, serta firewall tidak memblokir trafik terkait.</div>
+      </section>
+
+      <section class="module searchable" id="modul6" data-title="Modul 6 — Firewall & NAT">
+        <div class="module-head">
+          <div><div class="module-tag">Modul 06</div><h2>Firewall Filter, Connection Tracking, dan NAT</h2><p class="module-intro">Melindungi router, mengendalikan trafik transit, memahami chain input/forward/output, dan membagikan internet dengan source NAT.</p></div>
+          <button class="btn btn-secondary complete-btn" data-module="modul6">Tandai Selesai</button>
+        </div>
+        <h3>Memilih Chain</h3>
+        <div class="grid-3">
+          <div class="card"><h4>input</h4><p>Paket yang tujuan akhirnya adalah router, misalnya WinBox, DNS, ping, dan SSH ke router.</p></div>
+          <div class="card"><h4>forward</h4><p>Paket yang melewati router, misalnya client LAN menuju internet atau antarsubnet.</p></div>
+          <div class="card"><h4>output</h4><p>Paket yang dibuat oleh router, misalnya DNS query, NTP, ping, atau update.</p></div>
+        </div>
+        <h3>Urutan Firewall Input Dasar</h3>
+        <div class="code-block"><div class="code-top"><span>Terminal — baseline firewall input</span><button class="copy-btn">Salin</button></div><pre><code><span class="comment"># 1. Izinkan koneksi yang sudah dikenal</span>
+<span class="cmd">/ip firewall filter add</span> <span class="arg">chain=input action=accept connection-state=established,related,untracked comment="accept established related"</span>
+
+<span class="comment"># 2. Buang paket invalid</span>
+<span class="cmd">/ip firewall filter add</span> <span class="arg">chain=input action=drop connection-state=invalid comment="drop invalid"</span>
+
+<span class="comment"># 3. Izinkan ICMP seperlunya</span>
+<span class="cmd">/ip firewall filter add</span> <span class="arg">chain=input action=accept protocol=icmp comment="allow ICMP"</span>
+
+<span class="comment"># 4. Izinkan manajemen dan DNS dari LAN</span>
+<span class="cmd">/ip firewall filter add</span> <span class="arg">chain=input action=accept in-interface=bridge-LAN comment="allow trusted LAN"</span>
+
+<span class="comment"># 5. Tolak akses lain dari WAN</span>
+<span class="cmd">/ip firewall filter add</span> <span class="arg">chain=input action=drop in-interface=ether1 comment="drop other WAN input"</span></code></pre></div>
+        <h3>NAT Masquerade</h3>
+        <div class="code-block"><div class="code-top"><span>Terminal — internet sharing untuk WAN dinamis</span><button class="copy-btn">Salin</button></div><pre><code><span class="cmd">/ip firewall nat add</span> <span class="arg">chain=srcnat out-interface=ether1 action=masquerade comment="NAT internet"</span></code></pre></div>
+        <div class="callout"><strong>Masquerade vs src-nat</strong><code>masquerade</code> lazim untuk IP WAN yang dapat berubah. Untuk alamat publik statis, administrator dapat menggunakan <code>src-nat</code> dengan alamat sumber yang ditentukan.</div>
+        <h3>Connection State</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>State</th><th>Arti praktis</th></tr></thead>
+          <tbody>
+            <tr><td>new</td><td>Koneksi baru atau paket awal yang belum menjadi bagian koneksi established.</td></tr>
+            <tr><td>established</td><td>Paket bagian dari koneksi yang telah dikenali.</td></tr>
+            <tr><td>related</td><td>Koneksi baru yang berkaitan dengan koneksi lain yang telah dikenali.</td></tr>
+            <tr><td>invalid</td><td>Paket tidak dapat dikaitkan dengan koneksi yang valid.</td></tr>
+          </tbody>
+        </table></div>
+        <div class="callout danger"><strong>Perhatikan urutan rule</strong>Firewall diproses dari atas ke bawah. Rule yang terlalu umum di atas dapat membuat rule di bawah tidak pernah digunakan.</div>
+      </section>
+
+      <section class="module searchable" id="modul7" data-title="Modul 7 — Wireless">
+        <div class="module-head">
+          <div><div class="module-tag">Modul 07</div><h2>Dasar Wireless LAN MikroTik</h2><p class="module-intro">Memahami band, channel width, SSID, mode AP/station, keamanan WPA2/WPA3, interferensi, signal strength, dan pemilihan paket wireless.</p></div>
+          <button class="btn btn-secondary complete-btn" data-module="modul7">Tandai Selesai</button>
+        </div>
+        <div class="callout warning"><strong>Perbedaan menu RouterOS</strong>Perangkat dan paket yang digunakan dapat menampilkan menu <code>Wireless</code> atau <code>WiFi</code>. Periksa model perangkat, versi RouterOS, arsitektur, dan paket driver.</div>
+        <h3>Band 2.4 GHz dan 5 GHz</h3>
+        <div class="grid-2">
+          <div class="card"><h4>2.4 GHz</h4><p>Jangkauan cenderung lebih luas dan kompatibilitas tinggi, tetapi kanal lebih padat dan interferensi lebih sering.</p></div>
+          <div class="card"><h4>5 GHz</h4><p>Kapasitas dan pilihan kanal umumnya lebih baik, tetapi jangkauan dan penetrasi dinding dapat lebih rendah.</p></div>
+        </div>
+        <h3>Parameter Penting</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Parameter</th><th>Fungsi</th><th>Praktik baik</th></tr></thead>
+          <tbody>
+            <tr><td>SSID</td><td>Nama jaringan Wi-Fi.</td><td>Gunakan nama yang jelas tanpa informasi sensitif.</td></tr>
+            <tr><td>Frequency/channel</td><td>Menentukan kanal radio.</td><td>Lakukan scan dan pilih kanal yang lebih bersih.</td></tr>
+            <tr><td>Channel width</td><td>Lebar kanal radio.</td><td>Sesuaikan dengan kepadatan spektrum dan kebutuhan throughput.</td></tr>
+            <tr><td>Security</td><td>Otentikasi dan enkripsi.</td><td>Gunakan WPA2/WPA3 dengan passphrase kuat sesuai dukungan perangkat.</td></tr>
+            <tr><td>Country</td><td>Menerapkan batas regulasi radio.</td><td>Pilih negara sesuai lokasi penggunaan.</td></tr>
+          </tbody>
+        </table></div>
+        <h3>Contoh Konsep AP</h3>
+        <div class="code-block"><div class="code-top"><span>Terminal — contoh legacy wireless (sesuaikan perangkat)</span><button class="copy-btn">Salin</button></div><pre><code><span class="cmd">/interface wireless security-profiles add</span> <span class="arg">name=sec-LAB authentication-types=wpa2-psk wpa2-pre-shared-key="PasswordWiFiKuat"</span>
+<span class="cmd">/interface wireless set</span> <span class="arg">wlan1 mode=ap-bridge ssid="LAB-MTCNA" band=2ghz-b/g/n security-profile=sec-LAB disabled=no</span>
+<span class="cmd">/interface bridge port add</span> <span class="arg">bridge=bridge-LAN interface=wlan1</span></code></pre></div>
+        <h3>Analisis Kualitas Link</h3>
+        <div class="grid-3">
+          <div class="card"><h4>Signal Strength</h4><p>Kekuatan sinyal yang diterima. Nilai lebih mendekati 0 dBm berarti lebih kuat.</p></div>
+          <div class="card"><h4>Noise Floor</h4><p>Tingkat kebisingan radio yang dapat mengurangi kualitas komunikasi.</p></div>
+          <div class="card"><h4>SNR</h4><p>Selisih signal terhadap noise. Selisih yang lebih besar umumnya lebih baik.</p></div>
+        </div>
+      </section>
+
+      <section class="module searchable" id="modul8" data-title="Modul 8 — QoS & Queue">
+        <div class="module-head">
+          <div><div class="module-tag">Modul 08</div><h2>Bandwidth Management dengan Queue</h2><p class="module-intro">Membatasi kecepatan, membagi bandwidth, memahami upload/download dari perspektif router, Simple Queue, Queue Tree, PCQ, dan pengukuran trafik.</p></div>
+          <button class="btn btn-secondary complete-btn" data-module="modul8">Tandai Selesai</button>
+        </div>
+        <h3>Simple Queue</h3>
+        <div class="code-block"><div class="code-top"><span>Terminal — limit satu client</span><button class="copy-btn">Salin</button></div><pre><code><span class="cmd">/queue simple add</span> <span class="arg">name="Client-01" target=192.168.10.10/32 max-limit=5M/10M</span>
+<span class="comment"># Format max-limit pada Simple Queue: upload/download dari target.</span></code></pre></div>
+        <div class="code-block"><div class="code-top"><span>Terminal — limit satu subnet</span><button class="copy-btn">Salin</button></div><pre><code><span class="cmd">/queue simple add</span> <span class="arg">name="LAN-Total" target=192.168.10.0/24 max-limit=20M/50M</span></code></pre></div>
+        <h3>Komponen Queue</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Parameter</th><th>Fungsi</th></tr></thead>
+          <tbody>
+            <tr><td>target</td><td>Alamat IP, subnet, atau interface yang menjadi sasaran.</td></tr>
+            <tr><td>max-limit</td><td>Batas maksimum trafik.</td></tr>
+            <tr><td>limit-at</td><td>Jaminan bandwidth saat tersedia dalam struktur hierarki yang tepat.</td></tr>
+            <tr><td>priority</td><td>Prioritas relatif 1–8; angka lebih kecil berarti lebih tinggi.</td></tr>
+            <tr><td>queue type</td><td>Algoritma antrean seperti default-small atau PCQ.</td></tr>
+          </tbody>
+        </table></div>
+        <h3>PCQ untuk Pembagian Relatif Merata</h3>
+        <div class="code-block"><div class="code-top"><span>Terminal — tipe PCQ contoh</span><button class="copy-btn">Salin</button></div><pre><code><span class="cmd">/queue type add</span> <span class="arg">name=pcq-download kind=pcq pcq-classifier=dst-address</span>
+<span class="cmd">/queue type add</span> <span class="arg">name=pcq-upload kind=pcq pcq-classifier=src-address</span>
+<span class="cmd">/queue simple add</span> <span class="arg">name="PCQ-LAN" target=192.168.10.0/24 max-limit=20M/50M queue=pcq-upload/pcq-download</span></code></pre></div>
+        <div class="callout warning"><strong>FastTrack dan queue</strong>Pada desain tertentu, FastTrack dapat membuat sebagian trafik melewati pemrosesan queue tertentu. Verifikasi counter dan hasil pengujian saat menerapkan QoS.</div>
+      </section>
+
+      <section class="module searchable" id="modul9" data-title="Modul 9 — PPP & Tunnel">
+        <div class="module-head">
+          <div><div class="module-tag">Modul 09</div><h2>PPP, PPPoE, Profile, Secret, dan Tunnel Dasar</h2><p class="module-intro">Mengenal koneksi point-to-point, autentikasi, address assignment, profile, PPP secret, PPPoE client/server, dan prinsip VPN.</p></div>
+          <button class="btn btn-secondary complete-btn" data-module="modul9">Tandai Selesai</button>
+        </div>
+        <h3>PPPoE Client ke ISP</h3>
+        <div class="code-block"><div class="code-top"><span>Terminal — PPPoE client</span><button class="copy-btn">Salin</button></div><pre><code><span class="cmd">/interface pppoe-client add</span> <span class="arg">name=pppoe-ISP interface=ether1 user="pelanggan" password="rahasia" add-default-route=yes use-peer-dns=no disabled=no</span>
+<span class="cmd">/interface pppoe-client print detail</span></code></pre></div>
+        <h3>Komponen PPP Server</h3>
+        <div class="grid-3">
+          <div class="card"><h4>Profile</h4><p>Menyimpan local address, remote pool, DNS, rate limit, bridge, dan parameter sesi.</p></div>
+          <div class="card"><h4>Secret</h4><p>Akun PPP berisi username, password, service, profile, dan alamat tertentu.</p></div>
+          <div class="card"><h4>Active Connections</h4><p>Menampilkan sesi pengguna yang sedang aktif beserta IP dan uptime.</p></div>
+        </div>
+        <div class="code-block"><div class="code-top"><span>Terminal — contoh profile dan secret</span><button class="copy-btn">Salin</button></div><pre><code><span class="cmd">/ip pool add</span> <span class="arg">name=pool-ppp ranges=10.10.10.10-10.10.10.100</span>
+<span class="cmd">/ppp profile add</span> <span class="arg">name=profile-user local-address=10.10.10.1 remote-address=pool-ppp dns-server=10.10.10.1 rate-limit=5M/10M</span>
+<span class="cmd">/ppp secret add</span> <span class="arg">name=user01 password="PasswordUser" service=pppoe profile=profile-user</span></code></pre></div>
+        <h3>Prinsip Pemilihan VPN</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Kebutuhan</th><th>Pertimbangan</th></tr></thead>
+          <tbody>
+            <tr><td>Remote access</td><td>Autentikasi pengguna, enkripsi, kompatibilitas client, dan pembatasan akses.</td></tr>
+            <tr><td>Site-to-site</td><td>Subnet kedua lokasi, route, firewall, MTU, dan kestabilan endpoint.</td></tr>
+            <tr><td>Keamanan</td><td>Pilih protokol dan cipher modern yang didukung kedua sisi; hindari protokol usang.</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section class="module searchable" id="modul10" data-title="Modul 10 — Tools & Security">
+        <div class="module-head">
+          <div><div class="module-tag">Modul 10</div><h2>Monitoring, Troubleshooting, Backup, dan Hardening</h2><p class="module-intro">Menggunakan ping, traceroute, torch, sniffer, log, graphing, resource monitor, connection tracking, serta prosedur diagnosis yang sistematis.</p></div>
+          <button class="btn btn-secondary complete-btn" data-module="modul10">Tandai Selesai</button>
+        </div>
+        <h3>Toolkit Administrator</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Tool</th><th>Kegunaan</th><th>Contoh fokus</th></tr></thead>
+          <tbody>
+            <tr><td>Ping</td><td>Menguji reachability dan latency.</td><td>Gateway, internet IP, domain.</td></tr>
+            <tr><td>Traceroute</td><td>Melihat hop menuju tujuan.</td><td>Menemukan titik putus jalur.</td></tr>
+            <tr><td>Torch</td><td>Melihat trafik real-time pada interface.</td><td>IP, port, protokol, rate.</td></tr>
+            <tr><td>Packet Sniffer</td><td>Menangkap dan menganalisis paket.</td><td>DHCP, DNS, TCP handshake.</td></tr>
+            <tr><td>Log</td><td>Merekam kejadian sistem.</td><td>Interface down, login, DHCP, firewall.</td></tr>
+            <tr><td>Profile</td><td>Melihat penggunaan CPU per proses.</td><td>Firewall, management, networking.</td></tr>
+          </tbody>
+        </table></div>
+        <div class="code-block"><div class="code-top"><span>Terminal — diagnosis cepat</span><button class="copy-btn">Salin</button></div><pre><code><span class="cmd">/ping</span> <span class="arg">8.8.8.8 count=5</span>
+<span class="cmd">/ping</span> <span class="arg">google.com count=5</span>
+<span class="cmd">/tool traceroute</span> <span class="arg">8.8.8.8</span>
+<span class="cmd">/tool torch</span> <span class="arg">interface=ether1</span>
+<span class="cmd">/log print</span>
+<span class="cmd">/system resource print</span>
+<span class="cmd">/tool profile</span></code></pre></div>
+        <h3>Metode Troubleshooting Berlapis</h3>
+        <div class="grid-2">
+          <div class="card"><h4>1. Physical</h4><p>Periksa power, kabel, LED link, interface running, SFP, dan negosiasi speed/duplex.</p></div>
+          <div class="card"><h4>2. Data Link</h4><p>Periksa bridge port, VLAN, MAC table, wireless registration, dan loop.</p></div>
+          <div class="card"><h4>3. Network</h4><p>Periksa IP/prefix, ARP, gateway, route aktif, ping lokal, dan ping remote.</p></div>
+          <div class="card"><h4>4. Service</h4><p>Periksa DHCP lease, DNS, NAT, firewall, port layanan, log, dan aplikasi.</p></div>
+        </div>
+        <h3>Checklist Hardening</h3>
+        <div class="check-list">
+          <label class="check-item"><input type="checkbox"> Gunakan akun administrator individual dan password kuat.</label>
+          <label class="check-item"><input type="checkbox"> Batasi WinBox/SSH hanya dari subnet manajemen.</label>
+          <label class="check-item"><input type="checkbox"> Nonaktifkan service dan package yang tidak digunakan.</label>
+          <label class="check-item"><input type="checkbox"> Terapkan firewall input yang teruji.</label>
+          <label class="check-item"><input type="checkbox"> Perbarui RouterOS dan firmware secara terencana.</label>
+          <label class="check-item"><input type="checkbox"> Simpan backup terenkripsi dan export konfigurasi.</label>
+          <label class="check-item"><input type="checkbox"> Dokumentasikan IP plan, topologi, port, user, dan perubahan.</label>
+        </div>
+      </section>
+
+      <section class="module searchable" id="praktikum" data-title="Praktikum Terpadu">
+        <div class="module-head"><div><div class="module-tag">Laboratorium</div><h2>Praktikum Terpadu MTCNA</h2><p class="module-intro">Gunakan CHR, perangkat RouterBOARD, atau simulator laboratorium yang tersedia. Kerjakan berurutan dan simpan export setiap akhir praktik.</p></div></div>
+
+        <div class="lab">
+          <div class="lab-head"><div class="lab-number">1</div><div><h3 style="margin:0">Basic Internet Gateway</h3><small>Target: client LAN mendapat IP dan dapat mengakses internet.</small></div></div>
+          <div class="lab-steps">
+            <div class="lab-step"><span class="step-num">01</span><div>Reset konfigurasi hanya pada perangkat laboratorium dan login kembali.</div></div>
+            <div class="lab-step"><span class="step-num">02</span><div>Buat <code>bridge-LAN</code>, masukkan ether2–ether5, lalu beri IP <code>192.168.10.1/24</code>.</div></div>
+            <div class="lab-step"><span class="step-num">03</span><div>Aktifkan DHCP client pada ether1 dan pastikan memperoleh IP serta default route.</div></div>
+            <div class="lab-step"><span class="step-num">04</span><div>Buat DHCP server LAN dengan pool <code>192.168.10.10–192.168.10.200</code>.</div></div>
+            <div class="lab-step"><span class="step-num">05</span><div>Aktifkan DNS cache dan source NAT masquerade.</div></div>
+            <div class="lab-step"><span class="step-num">06</span><div>Uji client: IP, gateway, ping router, ping 8.8.8.8, dan resolusi domain.</div></div>
+          </div>
+        </div>
+
+        <div class="lab">
+          <div class="lab-head"><div class="lab-number">2</div><div><h3 style="margin:0">Secure Router Management</h3><small>Target: akses manajemen hanya dari LAN.</small></div></div>
+          <div class="lab-steps">
+            <div class="lab-step"><span class="step-num">01</span><div>Buat user administrator baru dan verifikasi login.</div></div>
+            <div class="lab-step"><span class="step-num">02</span><div>Nonaktifkan telnet, FTP, API, dan service lain yang tidak digunakan.</div></div>
+            <div class="lab-step"><span class="step-num">03</span><div>Batasi WinBox dan SSH ke <code>192.168.10.0/24</code>.</div></div>
+            <div class="lab-step"><span class="step-num">04</span><div>Terapkan firewall input dasar menggunakan Safe Mode.</div></div>
+            <div class="lab-step"><span class="step-num">05</span><div>Uji akses dari LAN dan pastikan akses dari interface WAN tertolak.</div></div>
+          </div>
+        </div>
+
+        <div class="lab">
+          <div class="lab-head"><div class="lab-number">3</div><div><h3 style="margin:0">Static Routing Antarrouter</h3><small>Target: LAN A dan LAN B saling berkomunikasi.</small></div></div>
+          <div class="lab-steps">
+            <div class="lab-step"><span class="step-num">01</span><div>R1 LAN <code>192.168.10.0/24</code>, R2 LAN <code>192.168.20.0/24</code>.</div></div>
+            <div class="lab-step"><span class="step-num">02</span><div>Hubungkan R1–R2 dengan subnet transit <code>172.16.0.0/30</code>.</div></div>
+            <div class="lab-step"><span class="step-num">03</span><div>Tambahkan static route di kedua router.</div></div>
+            <div class="lab-step"><span class="step-num">04</span><div>Uji ping gateway, IP transit, dan client di LAN lawan.</div></div>
+            <div class="lab-step"><span class="step-num">05</span><div>Gunakan traceroute dan jelaskan setiap hop.</div></div>
+          </div>
+        </div>
+
+        <div class="lab">
+          <div class="lab-head"><div class="lab-number">4</div><div><h3 style="margin:0">Bandwidth Management</h3><small>Target: membatasi dua client dengan kebijakan berbeda.</small></div></div>
+          <div class="lab-steps">
+            <div class="lab-step"><span class="step-num">01</span><div>Buat static lease untuk client A dan B.</div></div>
+            <div class="lab-step"><span class="step-num">02</span><div>Client A: maksimum 5 Mbps upload / 10 Mbps download.</div></div>
+            <div class="lab-step"><span class="step-num">03</span><div>Client B: maksimum 2 Mbps upload / 5 Mbps download.</div></div>
+            <div class="lab-step"><span class="step-num">04</span><div>Amati counter queue dan trafik menggunakan Torch.</div></div>
+            <div class="lab-step"><span class="step-num">05</span><div>Catat hasil pengujian sebelum dan sesudah queue.</div></div>
+          </div>
+        </div>
+
+        <div class="lab">
+          <div class="lab-head"><div class="lab-number">5</div><div><h3 style="margin:0">Final Troubleshooting Challenge</h3><small>Target: menemukan gangguan tanpa melihat jawaban terlebih dahulu.</small></div></div>
+          <div class="lab-steps">
+            <div class="lab-step"><span class="step-num">A</span><div>Client memperoleh IP tetapi tidak bisa ping gateway.</div></div>
+            <div class="lab-step"><span class="step-num">B</span><div>Client bisa ping 8.8.8.8 tetapi tidak bisa membuka nama domain.</div></div>
+            <div class="lab-step"><span class="step-num">C</span><div>Router bisa internet tetapi client tidak bisa internet.</div></div>
+            <div class="lab-step"><span class="step-num">D</span><div>LAN A bisa mencapai IP transit R2 tetapi tidak bisa mencapai LAN B.</div></div>
+            <div class="lab-step"><span class="step-num">E</span><div>Simple Queue terlihat aktif, tetapi kecepatan client tidak sesuai kebijakan.</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="module searchable" id="quiz" data-title="Uji Kompetensi">
+        <div class="module-head"><div><div class="module-tag">Evaluasi</div><h2>Uji Kompetensi MTCNA Dasar</h2><p class="module-intro">Pilih satu jawaban terbaik. Nilai minimal latihan yang disarankan: 80%.</p></div></div>
+        <form id="quizForm">
+          <div class="quiz-question"><p>1. Chain firewall untuk paket yang menuju router itu sendiri adalah…</p>
+            <label class="option"><input type="radio" name="q1" value="a"> forward</label>
+            <label class="option"><input type="radio" name="q1" value="b"> input</label>
+            <label class="option"><input type="radio" name="q1" value="c"> output</label>
+            <label class="option"><input type="radio" name="q1" value="d"> srcnat</label>
+          </div>
+          <div class="quiz-question"><p>2. Prefix /24 memiliki subnet mask…</p>
+            <label class="option"><input type="radio" name="q2" value="a"> 255.255.0.0</label>
+            <label class="option"><input type="radio" name="q2" value="b"> 255.255.255.0</label>
+            <label class="option"><input type="radio" name="q2" value="c"> 255.255.255.128</label>
+            <label class="option"><input type="radio" name="q2" value="d"> 255.255.255.252</label>
+          </div>
+          <div class="quiz-question"><p>3. Fungsi utama NAT masquerade pada gateway internet adalah…</p>
+            <label class="option"><input type="radio" name="q3" value="a"> Membuat user hotspot</label>
+            <label class="option"><input type="radio" name="q3" value="b"> Mengubah alamat sumber private saat keluar WAN dinamis</label>
+            <label class="option"><input type="radio" name="q3" value="c"> Membuat static route</label>
+            <label class="option"><input type="radio" name="q3" value="d"> Memblokir DNS</label>
+          </div>
+          <div class="quiz-question"><p>4. Urutan DHCP yang benar adalah…</p>
+            <label class="option"><input type="radio" name="q4" value="a"> Discover, Offer, Request, Acknowledge</label>
+            <label class="option"><input type="radio" name="q4" value="b"> Request, Discover, Offer, Acknowledge</label>
+            <label class="option"><input type="radio" name="q4" value="c"> Offer, Discover, Acknowledge, Request</label>
+            <label class="option"><input type="radio" name="q4" value="d"> Discover, Request, Offer, Release</label>
+          </div>
+          <div class="quiz-question"><p>5. Route tujuan 0.0.0.0/0 disebut…</p>
+            <label class="option"><input type="radio" name="q5" value="a"> Host route</label>
+            <label class="option"><input type="radio" name="q5" value="b"> Blackhole route</label>
+            <label class="option"><input type="radio" name="q5" value="c"> Default route</label>
+            <label class="option"><input type="radio" name="q5" value="d"> Connected route</label>
+          </div>
+          <div class="quiz-question"><p>6. Tool untuk melihat trafik real-time per interface adalah…</p>
+            <label class="option"><input type="radio" name="q6" value="a"> Torch</label>
+            <label class="option"><input type="radio" name="q6" value="b"> Netinstall</label>
+            <label class="option"><input type="radio" name="q6" value="c"> Safe Mode</label>
+            <label class="option"><input type="radio" name="q6" value="d"> Scheduler</label>
+          </div>
+          <div class="quiz-question"><p>7. Route dengan prefix paling spesifik akan…</p>
+            <label class="option"><input type="radio" name="q7" value="a"> Selalu diabaikan</label>
+            <label class="option"><input type="radio" name="q7" value="b"> Dipilih sebelum route yang kurang spesifik</label>
+            <label class="option"><input type="radio" name="q7" value="c"> Menjadi DNS server</label>
+            <label class="option"><input type="radio" name="q7" value="d"> Menghapus route lain</label>
+          </div>
+          <div class="quiz-question"><p>8. Fungsi bridge adalah…</p>
+            <label class="option"><input type="radio" name="q8" value="a"> Menggabungkan interface pada domain Layer 2</label>
+            <label class="option"><input type="radio" name="q8" value="b"> Menambah lisensi RouterOS</label>
+            <label class="option"><input type="radio" name="q8" value="c"> Mengubah DNS publik</label>
+            <label class="option"><input type="radio" name="q8" value="d"> Membuat route internet otomatis</label>
+          </div>
+          <div class="quiz-question"><p>9. Connection state yang sebaiknya umumnya dibuang adalah…</p>
+            <label class="option"><input type="radio" name="q9" value="a"> established</label>
+            <label class="option"><input type="radio" name="q9" value="b"> related</label>
+            <label class="option"><input type="radio" name="q9" value="c"> invalid</label>
+            <label class="option"><input type="radio" name="q9" value="d"> new dari LAN tepercaya</label>
+          </div>
+          <div class="quiz-question"><p>10. Jika ping 8.8.8.8 berhasil tetapi ping nama domain gagal, komponen pertama yang diperiksa adalah…</p>
+            <label class="option"><input type="radio" name="q10" value="a"> DNS</label>
+            <label class="option"><input type="radio" name="q10" value="b"> LED power</label>
+            <label class="option"><input type="radio" name="q10" value="c"> Bridge MAC address</label>
+            <label class="option"><input type="radio" name="q10" value="d"> Nama identity router</label>
+          </div>
+          <div class="quiz-question"><p>11. Metode akses GUI khusus MikroTik adalah…</p>
+            <label class="option"><input type="radio" name="q11" value="a"> Wireshark</label>
+            <label class="option"><input type="radio" name="q11" value="b"> WinBox</label>
+            <label class="option"><input type="radio" name="q11" value="c"> PuTTYgen</label>
+            <label class="option"><input type="radio" name="q11" value="d"> Docker</label>
+          </div>
+          <div class="quiz-question"><p>12. Pada Simple Queue, target digunakan untuk…</p>
+            <label class="option"><input type="radio" name="q12" value="a"> Menentukan sasaran trafik</label>
+            <label class="option"><input type="radio" name="q12" value="b"> Menentukan password user</label>
+            <label class="option"><input type="radio" name="q12" value="c"> Menentukan firmware</label>
+            <label class="option"><input type="radio" name="q12" value="d"> Menentukan SSID</label>
+          </div>
+          <div class="quiz-question"><p>13. Agar LAN A dan LAN B di belakang dua router dapat berkomunikasi, diperlukan…</p>
+            <label class="option"><input type="radio" name="q13" value="a"> Route hanya di R1</label>
+            <label class="option"><input type="radio" name="q13" value="b"> Route pergi dan kembali yang benar</label>
+            <label class="option"><input type="radio" name="q13" value="c"> NAT pada setiap interface LAN</label>
+            <label class="option"><input type="radio" name="q13" value="d"> SSID yang sama</label>
+          </div>
+          <div class="quiz-question"><p>14. Langkah aman sebelum perubahan konfigurasi besar adalah…</p>
+            <label class="option"><input type="radio" name="q14" value="a"> Menghapus semua log</label>
+            <label class="option"><input type="radio" name="q14" value="b"> Membuat backup dan export</label>
+            <label class="option"><input type="radio" name="q14" value="c"> Menonaktifkan semua interface</label>
+            <label class="option"><input type="radio" name="q14" value="d"> Menghapus user admin</label>
+          </div>
+          <div class="quiz-question"><p>15. Untuk jaringan Wi-Fi, pilihan keamanan yang tepat adalah…</p>
+            <label class="option"><input type="radio" name="q15" value="a"> Open network untuk semua pengguna</label>
+            <label class="option"><input type="radio" name="q15" value="b"> WEP dengan password pendek</label>
+            <label class="option"><input type="radio" name="q15" value="c"> WPA2/WPA3 dan passphrase kuat sesuai dukungan</label>
+            <label class="option"><input type="radio" name="q15" value="d"> Menyembunyikan SSID saja</label>
+          </div>
+          <button class="btn btn-primary" type="submit">Periksa Nilai</button>
+          <button class="btn btn-secondary" type="reset" id="quizReset">Ulangi</button>
+        </form>
+        <div class="quiz-result" id="quizResult"></div>
+      </section>
+
+      <section class="module searchable" id="referensi" data-title="Referensi Resmi">
+        <div class="module-head"><div><div class="module-tag">Sumber Belajar</div><h2>Referensi Resmi dan Pengembangan Lanjutan</h2><p class="module-intro">Gunakan dokumentasi resmi untuk menyesuaikan perintah dengan versi RouterOS, model perangkat, dan paket yang digunakan.</p></div></div>
+        <div class="resource-list">
+          <a class="resource-link" href="https://manual.mikrotik.com/" target="_blank" rel="noopener"><div><strong>RouterOS Manual</strong><br><span>Dokumentasi resmi RouterOS terbaru.</span></div><b>↗</b></a>
+          <a class="resource-link" href="https://mikrotik.com/training/about" target="_blank" rel="noopener"><div><strong>MikroTik Training</strong><br><span>Informasi pelatihan dan sertifikasi resmi.</span></div><b>↗</b></a>
+          <a class="resource-link" href="https://mikrotik.com/download" target="_blank" rel="noopener"><div><strong>Download MikroTik</strong><br><span>RouterOS, WinBox, CHR, dan tools resmi.</span></div><b>↗</b></a>
+          <a class="resource-link" href="https://help.mikrotik.com/docs/spaces/ROS/pages/328119/Getting+started" target="_blank" rel="noopener"><div><strong>Getting Started</strong><br><span>Panduan awal penggunaan RouterOS.</span></div><b>↗</b></a>
+        </div>
+        <h3>Jalur Belajar Setelah MTCNA</h3>
+        <div class="grid-3">
+          <div class="card"><h4>Routing</h4><p>Perdalam static routing, OSPF, BGP, policy routing, dan desain redundansi.</p></div>
+          <div class="card"><h4>Wireless</h4><p>Perdalam RF, link budget, CAPsMAN, roaming, security, dan troubleshooting spektrum.</p></div>
+          <div class="card"><h4>Security & QoS</h4><p>Perdalam firewall, VPN, attack mitigation, mangle, queue tree, dan traffic engineering.</p></div>
+        </div>
+        <div class="callout success"><strong>Rekomendasi pengajar</strong>Setiap peserta sebaiknya mengumpulkan bukti praktik berupa diagram topologi, tabel IP, export konfigurasi, screenshot hasil ping, dan catatan troubleshooting.</div>
+      </section>
+
+      <footer>
+        MTCNA Learning Hub • Bahan ajar mandiri RouterOS v7 • Simpan file ini agar dapat digunakan secara offline.
+      </footer>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast">Tersalin</div>
+
+<script>
+(() => {
+  const modules = [...document.querySelectorAll('.module')];
+  const navLinks = [...document.querySelectorAll('.nav-link')];
+  const pageTitle = document.getElementById('pageTitle');
+  const sidebar = document.getElementById('sidebar');
+  const menuBtn = document.getElementById('menuBtn');
+  const themeBtn = document.getElementById('themeBtn');
+  const search = document.getElementById('search');
+  const searchInfo = document.getElementById('searchInfo');
+  const toast = document.getElementById('toast');
+  const completeButtons = [...document.querySelectorAll('.complete-btn')];
+  const moduleIds = completeButtons.map(b => b.dataset.module);
+  let completed = JSON.parse(localStorage.getItem('mtcna-completed') || '[]');
+
+  function showToast(message){
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 1700);
+  }
+
+  function navigate(target){
+    const targetEl = document.getElementById(target);
+    if(!targetEl) return;
+    modules.forEach(m => m.classList.toggle('active', m.id === target));
+    navLinks.forEach(n => n.classList.toggle('active', n.dataset.target === target));
+    pageTitle.textContent = targetEl.dataset.title || 'MTCNA Learning Hub';
+    sidebar.classList.remove('open');
+    window.scrollTo({top:0,behavior:'smooth'});
+    history.replaceState(null,'','#' + target);
+  }
+
+  navLinks.forEach(link => link.addEventListener('click', () => navigate(link.dataset.target)));
+  document.querySelectorAll('.jump-btn').forEach(btn => btn.addEventListener('click', () => navigate(btn.dataset.target)));
+  menuBtn.addEventListener('click', () => sidebar.classList.toggle('open'));
+
+  function updateProgress(){
+    const count = completed.filter(id => moduleIds.includes(id)).length;
+    const percentage = Math.round((count / moduleIds.length) * 100);
+    document.getElementById('progressFill').style.width = percentage + '%';
+    document.getElementById('progressText').textContent = percentage + '%';
+    document.getElementById('progressCount').textContent = `${count} dari ${moduleIds.length} modul selesai`;
+    completeButtons.forEach(btn => {
+      const done = completed.includes(btn.dataset.module);
+      btn.textContent = done ? '✓ Sudah Selesai' : 'Tandai Selesai';
+      btn.classList.toggle('btn-primary', done);
+      btn.classList.toggle('btn-secondary', !done);
+    });
+  }
+
+  completeButtons.forEach(btn => btn.addEventListener('click', () => {
+    const id = btn.dataset.module;
+    completed = completed.includes(id) ? completed.filter(x => x !== id) : [...completed,id];
+    localStorage.setItem('mtcna-completed', JSON.stringify(completed));
+    updateProgress();
+    showToast(completed.includes(id) ? 'Modul ditandai selesai' : 'Tanda selesai dibatalkan');
+  }));
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    if(confirm('Reset seluruh progress belajar dan checklist?')){
+      completed = [];
+      localStorage.removeItem('mtcna-completed');
+      document.querySelectorAll('.check-item input').forEach(i => i.checked = false);
+      localStorage.removeItem('mtcna-checks');
+      updateProgress();
+      showToast('Progress berhasil direset');
+    }
+  });
+
+  const savedTheme = localStorage.getItem('mtcna-theme') || 'dark';
+  document.documentElement.dataset.theme = savedTheme;
+  themeBtn.textContent = savedTheme === 'dark' ? '☀' : '☾';
+  themeBtn.addEventListener('click', () => {
+    const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('mtcna-theme', next);
+    themeBtn.textContent = next === 'dark' ? '☀' : '☾';
+  });
+
+  document.querySelectorAll('.copy-btn').forEach(btn => btn.addEventListener('click', async () => {
+    const code = btn.closest('.code-block').querySelector('code').innerText;
+    try{
+      await navigator.clipboard.writeText(code);
+      showToast('Perintah berhasil disalin');
+    }catch{
+      const area = document.createElement('textarea');
+      area.value = code; document.body.appendChild(area); area.select();
+      document.execCommand('copy'); area.remove();
+      showToast('Perintah berhasil disalin');
+    }
+  }));
+
+  const checkboxes = [...document.querySelectorAll('.check-item input')];
+  const savedChecks = JSON.parse(localStorage.getItem('mtcna-checks') || '{}');
+  checkboxes.forEach((box,i) => {
+    box.checked = !!savedChecks[i];
+    box.addEventListener('change', () => {
+      const state = {};
+      checkboxes.forEach((b,j) => state[j] = b.checked);
+      localStorage.setItem('mtcna-checks', JSON.stringify(state));
+    });
+  });
+
+  search.addEventListener('input', () => {
+    const q = search.value.trim().toLowerCase();
+    if(!q){ searchInfo.style.display='none'; return; }
+    const found = modules.filter(m => (m.innerText + ' ' + m.dataset.title).toLowerCase().includes(q));
+    searchInfo.style.display = 'block';
+    if(found.length){
+      searchInfo.innerHTML = `<strong>${found.length} bagian ditemukan.</strong> Klik hasil: ` +
+        found.slice(0,8).map(m => `<button class="btn btn-secondary search-jump" data-target="${m.id}" style="padding:5px 9px;margin:4px">${m.dataset.title}</button>`).join('');
+      searchInfo.querySelectorAll('.search-jump').forEach(b => b.addEventListener('click', () => navigate(b.dataset.target)));
+    } else {
+      searchInfo.innerHTML = `<strong>Tidak ditemukan.</strong> Coba kata kunci lain seperti DHCP, firewall, NAT, routing, atau queue.`;
+    }
+  });
+
+  const answers = {q1:'b',q2:'b',q3:'b',q4:'a',q5:'c',q6:'a',q7:'b',q8:'a',q9:'c',q10:'a',q11:'b',q12:'a',q13:'b',q14:'b',q15:'c'};
+  document.getElementById('quizForm').addEventListener('submit', e => {
+    e.preventDefault();
+    let score = 0, answered = 0;
+    Object.entries(answers).forEach(([q,a]) => {
+      const picked = document.querySelector(`input[name="${q}"]:checked`);
+      if(picked){ answered++; if(picked.value === a) score++; }
+    });
+    const percent = Math.round(score / Object.keys(answers).length * 100);
+    const result = document.getElementById('quizResult');
+    result.style.display = 'block';
+    const label = percent >= 80 ? 'Kompeten pada latihan dasar' : percent >= 60 ? 'Cukup, perlu penguatan' : 'Perlu mengulang materi';
+    result.innerHTML = `<h3 style="margin-top:0">Nilai: ${score}/15 (${percent}%)</h3>
+      <p><strong>${label}</strong></p>
+      <p>Soal dijawab: ${answered}/15. Pelajari kembali modul yang berkaitan dengan jawaban yang masih salah.</p>`;
+    result.scrollIntoView({behavior:'smooth',block:'center'});
+  });
+  document.getElementById('quizReset').addEventListener('click', () => {
+    document.getElementById('quizResult').style.display = 'none';
+  });
+
+  updateProgress();
+  const hash = location.hash.replace('#','');
+  if(hash && document.getElementById(hash)) navigate(hash);
+})();
+</script>
+</body>
+</html>
