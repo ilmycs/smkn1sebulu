@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modul Olimpiade MikroTik - TKJ</title>
+<style>
+:root{--primary:#0f766e;--secondary:#164e63;--accent:#f59e0b;--bg:#f3f7f8;--card:#fff;--text:#1f2937;--muted:#64748b;--code:#0b1220}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+header{background:linear-gradient(135deg,#0f766e,#164e63);color:white;padding:48px 20px;text-align:center}
+header h1{font-size:42px;margin:0 0 8px}
+header p{font-size:18px;margin:5px auto;max-width:850px}
+.container{max-width:1150px;margin:auto;padding:24px}
+nav{position:sticky;top:0;z-index:10;background:#082f49;padding:10px;box-shadow:0 2px 8px #0002}
+nav .inner{max-width:1150px;margin:auto;display:flex;gap:8px;overflow:auto}
+nav a{color:white;text-decoration:none;white-space:nowrap;padding:8px 12px;border-radius:7px;font-size:14px}
+nav a:hover{background:#ffffff22}
+.card{background:var(--card);border-radius:14px;padding:25px;margin:20px 0;box-shadow:0 5px 20px #0f172a12}
+h2{color:var(--secondary);border-bottom:3px solid var(--accent);padding-bottom:8px}
+h3{color:var(--primary);margin-top:24px}
+ul,ol{padding-left:25px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:15px}
+.topic{border-left:5px solid var(--primary);padding:15px;background:#f8fafc;border-radius:8px}
+.badge{display:inline-block;background:#ecfeff;color:#155e75;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:bold}
+pre{background:var(--code);color:#dbeafe;padding:18px;border-radius:10px;overflow:auto;font-size:14px}
+code{font-family:Consolas,monospace}
+.note{background:#fffbeb;border-left:5px solid var(--accent);padding:15px;border-radius:7px}
+.tip{background:#ecfdf5;border-left:5px solid #10b981;padding:15px;border-radius:7px}
+.warn{background:#fef2f2;border-left:5px solid #ef4444;padding:15px;border-radius:7px}
+table{border-collapse:collapse;width:100%;margin:15px 0;background:white}
+th,td{border:1px solid #cbd5e1;padding:9px;text-align:left}
+th{background:#e2e8f0}
+.topology{font-family:Consolas,monospace;background:#111827;color:#d1fae5;padding:20px;border-radius:10px;white-space:pre;overflow:auto}
+footer{text-align:center;background:#082f49;color:#cbd5e1;padding:30px;margin-top:40px}
+@media print{nav{display:none}.card{box-shadow:none;break-inside:avoid}header{background:#164e63}.container{max-width:none}}
+</style>
+</head>
+<body>
+
+<header>
+<h1>MODUL OLIMPIADE MIKROTIK</h1>
+<p>Materi Teori, Praktik, Studi Kasus, Troubleshooting & Persiapan Kompetisi</p>
+<p><strong>Untuk Siswa SMK / TKJ</strong></p>
+</header>
+
+<nav><div class="inner">
+<a href="#petunjuk">Petunjuk</a><a href="#dasar">1 Dasar Jaringan</a><a href="#routeros">2 RouterOS</a>
+<a href="#ip">3 IP & Routing</a><a href="#dhcp">4 DHCP & DNS</a><a href="#nat">5 NAT</a>
+<a href="#firewall">6 Firewall</a><a href="#vlan">7 VLAN</a><a href="#wireless">8 Wireless</a>
+<a href="#bridge">9 Bridge</a><a href="#pppoe">10 PPPoE</a><a href="#bandwidth">11 Bandwidth</a>
+<a href="#routing">12 Routing Lanjutan</a><a href="#loadbalance">13 Load Balance</a>
+<a href="#vpn">14 VPN</a><a href="#trouble">15 Troubleshooting</a><a href="#simulasi">Simulasi</a>
+</div></nav>
+
+<main class="container">
+
+<section id="petunjuk" class="card">
+<h2>Petunjuk Belajar</h2>
+<p>Modul ini disusun sebagai jalur belajar dari konsep dasar jaringan sampai konfigurasi dan troubleshooting MikroTik tingkat kompetisi.</p>
+<div class="grid">
+<div class="topic"><span class="badge">LEVEL 1</span><h3>Fundamental</h3><p>IP addressing, subnetting, OSI/TCP-IP, RouterOS, bridge, DHCP dan DNS.</p></div>
+<div class="topic"><span class="badge">LEVEL 2</span><h3>Network Services</h3><p>NAT, firewall, VLAN, wireless, PPPoE dan bandwidth management.</p></div>
+<div class="topic"><span class="badge">LEVEL 3</span><h3>Advanced</h3><p>OSPF, dual WAN, PCC, failover, VPN dan troubleshooting.</p></div>
+<div class="topic"><span class="badge">LEVEL 4</span><h3>Competition</h3><p>Studi kasus, konfigurasi cepat, analisis error dan simulasi lomba.</p></div>
+</div>
+<div class="note"><strong>Catatan:</strong> Gunakan RouterOS/CHR/CHR Lab atau perangkat MikroTik yang tersedia. Nama interface pada perangkat nyata dapat berbeda, sehingga sesuaikan <code>ether1</code>, <code>ether2</code>, dan seterusnya.</div>
+</section>
+
+<section id="dasar" class="card">
+<h2>BAB 1 — Dasar Jaringan</h2>
+<h3>1.1 Konsep LAN, WAN dan Internet</h3>
+<ul><li><strong>LAN:</strong> jaringan pada area terbatas seperti laboratorium atau sekolah.</li><li><strong>WAN:</strong> menghubungkan jaringan yang berjauhan.</li><li><strong>Internet:</strong> jaringan global yang menghubungkan banyak jaringan.</li></ul>
+<h3>1.2 OSI dan TCP/IP</h3>
+<table><tr><th>OSI</th><th>Contoh</th></tr><tr><td>7 Application</td><td>HTTP, DNS, DHCP</td></tr><tr><td>6 Presentation</td><td>Encoding, encryption</td></tr><tr><td>5 Session</td><td>Session management</td></tr><tr><td>4 Transport</td><td>TCP, UDP</td></tr><tr><td>3 Network</td><td>IP, routing</td></tr><tr><td>2 Data Link</td><td>Ethernet, MAC, VLAN</td></tr><tr><td>1 Physical</td><td>Kabel, fiber, radio</td></tr></table>
+<h3>1.3 IPv4</h3>
+<p>IPv4 terdiri dari 32 bit, ditulis dalam empat oktet. Contoh: <code>192.168.10.1/24</code>.</p>
+<h3>1.4 Subnetting</h3>
+<table><tr><th>CIDR</th><th>Subnet Mask</th><th>Host usable umum</th></tr>
+<tr><td>/24</td><td>255.255.255.0</td><td>254</td></tr><tr><td>/25</td><td>255.255.255.128</td><td>126</td></tr>
+<tr><td>/26</td><td>255.255.255.192</td><td>62</td></tr><tr><td>/27</td><td>255.255.255.224</td><td>30</td></tr>
+<tr><td>/28</td><td>255.255.255.240</td><td>14</td></tr><tr><td>/30</td><td>255.255.255.252</td><td>2</td></tr></table>
+<div class="tip"><strong>Tips olimpiade:</strong> kuasai network address, broadcast, range host, jumlah subnet dan jumlah host tanpa kalkulator.</div>
+</section>
+
+<section id="routeros" class="card">
+<h2>BAB 2 — MikroTik RouterOS</h2>
+<h3>2.1 Akses Router</h3>
+<ul><li>WinBox — administrasi grafis.</li><li>WebFig — administrasi melalui browser.</li><li>CLI — sangat penting untuk lomba karena cepat dan presisi.</li></ul>
+<h3>2.2 Perintah Dasar CLI</h3>
+<pre><code>/system identity set name=ROUTER-OLIMPIADE
+/interface print
+/ip address print
+/ip route print
+/ip firewall filter print
+/ip firewall nat print
+/export
+/system backup save name=backup-olimpiade</code></pre>
+<h3>2.3 Safe Mode</h3>
+<p>Safe Mode membantu mencegah konfigurasi yang menyebabkan koneksi administrasi terputus. Biasakan melakukan perubahan kritis dengan metode yang dapat dikembalikan.</p>
+<h3>2.4 Reset</h3>
+<p>Reset menghapus konfigurasi tertentu sesuai pilihan. Jangan melakukan reset pada router produksi tanpa backup dan persetujuan.</p>
+</section>
+
+<section id="ip" class="card">
+<h2>BAB 3 — IP Address & Routing</h2>
+<h3>3.1 Memberikan IP</h3>
+<pre><code>/ip address add address=192.168.10.1/24 interface=ether2
+/ip address print</code></pre>
+<h3>3.2 Default Route</h3>
+<pre><code>/ip route add dst-address=0.0.0.0/0 gateway=192.168.1.1</code></pre>
+<h3>3.3 Static Route</h3>
+<pre><code>/ip route add dst-address=10.10.20.0/24 gateway=10.10.10.2</code></pre>
+<h3>3.4 Konsep routing</h3>
+<ul><li>Connected route dibuat otomatis ketika interface memiliki IP.</li><li>Default route digunakan ketika tidak ada route yang lebih spesifik.</li><li>Distance digunakan untuk memilih jalur ketika terdapat beberapa route.</li></ul>
+<div class="note">Urutan troubleshooting: cek interface → IP address → ARP → route → gateway → DNS → firewall → NAT.</div>
+</section>
+
+<section id="dhcp" class="card">
+<h2>BAB 4 — DHCP & DNS</h2>
+<h3>4.1 DHCP Server</h3>
+<pre><code>/ip pool add name=pool-lan ranges=192.168.10.10-192.168.10.200
+/ip dhcp-server add name=dhcp-lan interface=ether2 address-pool=pool-lan
+/ip dhcp-server network add address=192.168.10.0/24 gateway=192.168.10.1 dns-server=192.168.10.1
+/ip dhcp-server enable dhcp-lan</code></pre>
+<h3>4.2 DHCP Client</h3>
+<pre><code>/ip dhcp-client add interface=ether1 disabled=no</code></pre>
+<h3>4.3 DNS</h3>
+<pre><code>/ip dns set allow-remote-requests=yes servers=1.1.1.1,8.8.8.8
+/ip dns print</code></pre>
+<h3>4.4 Static Lease</h3>
+<p>Static lease mengikat MAC address tertentu dengan IP tertentu. Berguna untuk server, printer, AP dan perangkat penting.</p>
+</section>
+
+<section id="nat" class="card">
+<h2>BAB 5 — NAT</h2>
+<h3>5.1 Masquerade</h3>
+<pre><code>/ip firewall nat add chain=srcnat out-interface=ether1 action=masquerade</code></pre>
+<h3>5.2 dst-nat / Port Forwarding</h3>
+<pre><code>/ip firewall nat add chain=dstnat in-interface=ether1 protocol=tcp dst-port=80 \
+action=dst-nat to-addresses=192.168.10.10 to-ports=80</code></pre>
+<h3>5.3 Konsep penting</h3>
+<ul><li><code>srcnat</code> mengubah sumber trafik.</li><li><code>dstnat</code> mengubah tujuan trafik.</li><li><code>masquerade</code> cocok untuk koneksi WAN dengan IP dinamis.</li><li>Port forwarding perlu dipadukan dengan firewall filter yang sesuai.</li></ul>
+</section>
+
+<section id="firewall" class="card">
+<h2>BAB 6 — Firewall MikroTik</h2>
+<h3>6.1 Chain</h3>
+<table><tr><th>Chain</th><th>Fungsi</th></tr><tr><td>input</td><td>Traffic menuju router itu sendiri</td></tr><tr><td>forward</td><td>Traffic yang melewati router</td></tr><tr><td>output</td><td>Traffic yang berasal dari router</td></tr></table>
+<h3>6.2 Connection State</h3>
+<p>State umum: <code>established</code>, <code>related</code>, <code>new</code>, <code>invalid</code>.</p>
+<pre><code>/ip firewall filter
+add chain=input connection-state=established,related action=accept
+add chain=input connection-state=invalid action=drop
+add chain=input in-interface=ether1 action=drop</code></pre>
+<h3>6.3 Address List</h3>
+<pre><code>/ip firewall address-list add list=blocked address=192.168.10.50
+/ip firewall filter add chain=forward src-address-list=blocked action=drop</code></pre>
+<div class="warn"><strong>Perhatian:</strong> aturan firewall diproses dari atas ke bawah. Kesalahan urutan rule sering menjadi sumber kegagalan konfigurasi.</div>
+</section>
+
+<section id="vlan" class="card">
+<h2>BAB 7 — VLAN</h2>
+<h3>7.1 Konsep</h3>
+<p>VLAN memisahkan jaringan secara logis walaupun menggunakan infrastruktur switch yang sama.</p>
+<div class="topology">INTERNET
+    |
+ [MikroTik]
+    |
+  TRUNK
+    |
+ [Switch]
+  |   |   |
+V10 V20 V30
+Guru Siswa Server</div>
+<h3>7.2 Contoh Interface VLAN</h3>
+<pre><code>/interface vlan
+add name=vlan10-guru vlan-id=10 interface=bridge
+add name=vlan20-siswa vlan-id=20 interface=bridge
+add name=vlan30-server vlan-id=30 interface=bridge
+
+/ip address
+add address=10.10.10.1/24 interface=vlan10-guru
+add address=10.10.20.1/24 interface=vlan20-siswa
+add address=10.10.30.1/24 interface=vlan30-server</code></pre>
+<h3>7.3 Materi lomba</h3>
+<ul><li>Access port vs trunk.</li><li>VLAN ID.</li><li>Bridge VLAN Filtering.</li><li>Inter-VLAN routing.</li><li>Management VLAN.</li></ul>
+</section>
+
+<section id="wireless" class="card">
+<h2>BAB 8 — Wireless</h2>
+<ul><li>AP: access point untuk menyediakan koneksi wireless.</li><li>Station: client wireless.</li><li>SSID: nama jaringan.</li><li>Frequency & channel width memengaruhi performa.</li><li>Security profile digunakan untuk autentikasi dan enkripsi.</li></ul>
+<h3>Checklist optimasi</h3>
+<ol><li>Gunakan channel yang minim interferensi.</li><li>Atur channel width sesuai kebutuhan.</li><li>Gunakan keamanan modern yang didukung perangkat.</li><li>Perhatikan posisi AP, daya pancar dan jumlah client.</li><li>Uji dengan ping dan throughput.</li></ol>
+</section>
+
+<section id="bridge" class="card">
+<h2>BAB 9 — Bridge</h2>
+<h3>Konsep</h3>
+<p>Bridge menggabungkan beberapa interface menjadi satu domain Layer 2. Dalam desain VLAN modern, bridge VLAN filtering menjadi konsep penting.</p>
+<pre><code>/interface bridge add name=bridge-lan
+/interface bridge port
+add bridge=bridge-lan interface=ether2
+add bridge=bridge-lan interface=ether3
+/interface bridge print
+/interface bridge port print</code></pre>
+<h3>STP/RSTP</h3>
+<p>STP/RSTP membantu mencegah loop Layer 2. Pahami root bridge, path cost dan perubahan topologi.</p>
+</section>
+
+<section id="pppoe" class="card">
+<h2>BAB 10 — PPPoE</h2>
+<h3>PPPoE Server</h3>
+<pre><code>/ip pool add name=pppoe-pool ranges=10.20.0.10-10.20.0.200
+/ppp profile add name=profile-pppoe local-address=10.20.0.1 \
+remote-address=pppoe-pool rate-limit=10M/10M
+/ppp secret add name=user1 password=rahasia profile=profile-pppoe
+/interface pppoe-server server add interface=bridge-lan service-name=OLIMPIADE \
+default-profile=profile-pppoe disabled=no</code></pre>
+<p>PPPoE sering digunakan untuk autentikasi pelanggan dan pembagian bandwidth.</p>
+</section>
+
+<section id="bandwidth" class="card">
+<h2>BAB 11 — Bandwidth Management</h2>
+<h3>Simple Queue</h3>
+<pre><code>/queue simple add name=CLIENT-1 target=192.168.10.10/32 max-limit=5M/5M</code></pre>
+<h3>Konsep</h3>
+<ul><li><strong>max-limit:</strong> batas maksimum.</li><li><strong>limit-at:</strong> bandwidth minimum yang dijamin dalam kondisi tertentu.</li><li><strong>Burst:</strong> memungkinkan penggunaan bandwidth lebih tinggi untuk periode tertentu.</li><li><strong>PCQ:</strong> membantu pembagian bandwidth secara dinamis.</li><li><strong>Queue Tree:</strong> cocok untuk desain manajemen trafik yang lebih kompleks.</li></ul>
+<div class="tip">Dalam lomba, pahami bukan hanya cara membuat queue, tetapi juga mengapa trafik tidak mencapai target bandwidth.</div>
+</section>
+
+<section id="routing" class="card">
+<h2>BAB 12 — Routing Lanjutan</h2>
+<h3>OSPF</h3>
+<p>OSPF adalah dynamic routing protocol berbasis link-state. Materi yang perlu dikuasai: neighbor, Router ID, area, cost, LSDB dan route selection.</p>
+<pre><code>/routing ospf instance print
+/routing ospf area print
+/routing ospf interface-template print</code></pre>
+<h3>Konsep OSPF</h3>
+<ul><li>Router membentuk adjacency dengan neighbor.</li><li>Informasi link dipelajari melalui LSDB.</li><li>SPF digunakan untuk menentukan jalur terbaik.</li><li>Cost memengaruhi pemilihan jalur.</li></ul>
+</section>
+
+<section id="loadbalance" class="card">
+<h2>BAB 13 — Load Balancing & Failover</h2>
+<div class="topology">             +-- ISP 1
+             |
+LAN -- MikroTik
+             |
+             +-- ISP 2</div>
+<h3>Metode</h3>
+<ul><li>ECMP.</li><li>PCC (Per Connection Classifier).</li><li>Recursive routing untuk gateway checking.</li><li>Failover berdasarkan distance dan health check.</li></ul>
+<h3>Konsep PCC</h3>
+<p>PCC membagi koneksi ke beberapa jalur berdasarkan classifier tertentu. Tujuan utamanya adalah membagi koneksi, bukan memecah satu sesi TCP menjadi dua ISP secara sembarang.</p>
+<h3>Failover</h3>
+<p>ISP utama digunakan selama sehat. Ketika gateway/path utama gagal, route cadangan mengambil alih.</p>
+</section>
+
+<section id="vpn" class="card">
+<h2>BAB 14 — VPN</h2>
+<h3>Jenis yang perlu dipahami</h3>
+<ul><li>L2TP/IPsec.</li><li>SSTP.</li><li>WireGuard.</li><li>Site-to-site VPN.</li><li>Remote access VPN.</li></ul>
+<h3>Konsep troubleshooting</h3>
+<ol><li>Pastikan IP publik/reachability.</li><li>Pastikan port/protokol tidak diblokir.</li><li>Cek konfigurasi peer/client.</li><li>Cek route menuju subnet VPN.</li><li>Cek firewall.</li><li>Uji ping antar-subnet.</li></ol>
+</section>
+
+<section id="trouble" class="card">
+<h2>BAB 15 — Monitoring & Troubleshooting</h2>
+<h3>Tool penting</h3>
+<table><tr><th>Tool</th><th>Fungsi</th></tr>
+<tr><td>ping</td><td>Menguji reachability</td></tr><tr><td>traceroute</td><td>Melihat jalur paket</td></tr>
+<tr><td>torch</td><td>Melihat trafik interface</td></tr><tr><td>connection tracking</td><td>Melihat koneksi aktif</td></tr>
+<tr><td>log</td><td>Melihat kejadian/error</td></tr><tr><td>interface monitor</td><td>Melihat status dan statistik interface</td></tr></table>
+<h3>Alur troubleshooting 7 langkah</h3>
+<ol><li>Cek kabel/link/interface.</li><li>Cek IP address dan subnet.</li><li>Cek gateway dan ARP.</li><li>Cek routing.</li><li>Cek DNS.</li><li>Cek NAT.</li><li>Cek firewall dan service.</li></ol>
+<h3>Perintah diagnosis</h3>
+<pre><code>/interface print
+/ip address print
+/ip route print
+/ip arp print
+/ip dhcp-server lease print
+/ip dns print
+/ip firewall filter print
+/ip firewall nat print
+/ip firewall connection print
+/tool ping 8.8.8.8
+/tool traceroute 8.8.8.8
+/tool torch ether1</code></pre>
+</section>
+
+<section id="studi" class="card">
+<h2>Studi Kasus Olimpiade — Jaringan Sekolah</h2>
+<div class="topology">                    INTERNET
+                    |
+              +-----+-----+
+              | MikroTik |
+              +-----+-----+
+                    |
+                  TRUNK
+                    |
+               +----+----+
+               |  Switch |
+       +-------+----+----+-------+
+       |            |            |
+    VLAN 10       VLAN 20      VLAN 30
+     Guru         Siswa        Server
+ 10.10.10.0/24 10.10.20.0/24 10.10.30.0/24</div>
+<h3>Tugas</h3>
+<ol><li>Buat bridge dan VLAN 10, 20, 30.</li><li>Buat gateway masing-masing VLAN.</li><li>Buat DHCP untuk VLAN Guru dan Siswa.</li><li>Konfigurasikan DNS.</li><li>Berikan akses internet melalui NAT.</li><li>Blokir akses siswa menuju management router.</li><li>Izinkan siswa menuju internet.</li><li>Izinkan VLAN Guru mengakses Server.</li><li>Batasi bandwidth siswa.</li><li>Uji seluruh konektivitas dan dokumentasikan hasil.</li></ol>
+</section>
+
+<section id="soal" class="card">
+<h2>Latihan Soal Olimpiade</h2>
+<ol>
+<li>Apa fungsi default route?</li>
+<li>Apa perbedaan chain input dan forward?</li>
+<li>Mengapa masquerade umum digunakan pada WAN dengan IP dinamis?</li>
+<li>Berapa host usable pada subnet /27?</li>
+<li>Apa fungsi VLAN?</li>
+<li>Apa perbedaan access port dan trunk?</li>
+<li>Apa tujuan RSTP?</li>
+<li>Apa fungsi DHCP Server?</li>
+<li>Apa kegunaan Address List pada firewall?</li>
+<li>Apa perbedaan src-nat dan dst-nat?</li>
+<li>Apa fungsi OSPF?</li>
+<li>Apa tujuan PCC pada dual WAN?</li>
+<li>Apa fungsi recursive routing pada skenario failover?</li>
+<li>Tool MikroTik apa yang digunakan untuk melihat trafik secara real-time?</li>
+<li>Jika client dapat ping IP publik tetapi tidak dapat membuka domain, bagian apa yang perlu diperiksa terlebih dahulu?</li>
+</ol>
+<h3>Kunci Jawaban Singkat</h3>
+<ol>
+<li>Jalur default ketika tidak ada route yang lebih spesifik.</li><li>Input menuju router; forward melewati router.</li>
+<li>Karena dapat menyesuaikan perubahan IP sumber WAN.</li><li>30 host usable.</li><li>Memisahkan jaringan secara logis.</li>
+<li>Access biasanya membawa satu VLAN; trunk membawa beberapa VLAN bertag.</li>
+<li>Mencegah loop Layer 2 dan mempercepat konvergensi dibanding STP klasik.</li>
+<li>Memberikan konfigurasi IP otomatis kepada client.</li>
+<li>Mengelompokkan IP/entitas untuk digunakan oleh rule.</li>
+<li>src-nat mengubah sumber; dst-nat mengubah tujuan.</li>
+<li>Dynamic routing link-state.</li><li>Membagi koneksi ke beberapa jalur.</li>
+<li>Mendeteksi kesehatan jalur secara lebih nyata berdasarkan tujuan/reachability.</li>
+<li>Torch.</li><li>DNS configuration/reachability.</li>
+</ol>
+</section>
+
+<section id="simulasi" class="card">
+<h2>Simulasi Praktik Lomba</h2>
+<h3>Waktu: 90 Menit</h3>
+<p><strong>Target:</strong> peserta harus menghasilkan jaringan yang berfungsi penuh dan dapat menjelaskan konfigurasi.</p>
+<div class="grid">
+<div class="topic"><h3>Tahap 1 — 15 menit</h3><p>Reset lab, identifikasi interface, buat addressing plan dan diagram.</p></div>
+<div class="topic"><h3>Tahap 2 — 25 menit</h3><p>Konfigurasi bridge, VLAN, IP, DHCP dan DNS.</p></div>
+<div class="topic"><h3>Tahap 3 — 20 menit</h3><p>NAT, firewall dan pembatasan akses antar-segmen.</p></div>
+<div class="topic"><h3>Tahap 4 — 15 menit</h3><p>Dual WAN, failover atau routing sesuai soal.</p></div>
+<div class="topic"><h3>Tahap 5 — 15 menit</h3><p>Troubleshooting dan presentasi hasil.</p></div>
+</div>
+<h3>Rubrik Penilaian</h3>
+<table><tr><th>Komponen</th><th>Bobot</th></tr>
+<tr><td>IP Addressing & Subnetting</td><td>15%</td></tr>
+<tr><td>VLAN & Switching</td><td>15%</td></tr>
+<tr><td>Routing</td><td>15%</td></tr>
+<tr><td>DHCP/DNS/NAT</td><td>15%</td></tr>
+<tr><td>Firewall & Security</td><td>15%</td></tr>
+<tr><td>Bandwidth/VPN/Advanced</td><td>10%</td></tr>
+<tr><td>Troubleshooting</td><td>10%</td></tr>
+<tr><td>Kerapian & dokumentasi</td><td>5%</td></tr>
+</table>
+</section>
+
+<section class="card">
+<h2>Checklist Penguasaan</h2>
+<ul>
+<li>☐ Bisa menghitung subnetting tanpa kalkulator.</li>
+<li>☐ Bisa melakukan konfigurasi MikroTik melalui CLI.</li>
+<li>☐ Bisa membuat DHCP dan DNS.</li>
+<li>☐ Bisa memahami dan membuat NAT.</li>
+<li>☐ Bisa membuat firewall input/forward.</li>
+<li>☐ Bisa merancang VLAN.</li>
+<li>☐ Bisa memahami OSPF.</li>
+<li>☐ Bisa membuat dual-WAN/failover.</li>
+<li>☐ Bisa melakukan troubleshooting sistematis.</li>
+<li>☐ Bisa menyelesaikan studi kasus dalam batas waktu.</li>
+</ul>
+</section>
+
+</main>
+<footer>
+<p><strong>Modul Olimpiade MikroTik — TKJ</strong></p>
+<p>Materi dapat dikembangkan menjadi modul cetak, latihan lab, bank soal, dan simulasi kompetisi.</p>
+</footer>
+</body>
+</html>
