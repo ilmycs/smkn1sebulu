@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modul Pembelajaran MikroTik RouterOS - TKJ</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--text:#1e293b;--muted:#64748b;--primary:#2563eb;--dark:#0f172a;--border:#e2e8f0;--accent:#0ea5e9}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+header{background:linear-gradient(135deg,#0f172a,#1d4ed8);color:#fff;padding:48px 20px;text-align:center}
+header h1{font-size:clamp(28px,5vw,48px);margin:0 0 10px}header p{max-width:850px;margin:auto;color:#dbeafe}
+.container{max-width:1200px;margin:auto;padding:22px}
+.grid{display:grid;grid-template-columns:280px 1fr;gap:22px}
+aside{position:sticky;top:15px;height:max-content;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:0 5px 18px #0f172a0b}
+aside h3{margin-top:0}aside a{display:block;color:var(--text);text-decoration:none;padding:7px 8px;border-radius:7px;font-size:14px}aside a:hover{background:#eff6ff;color:var(--primary)}
+main section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:20px;box-shadow:0 5px 18px #0f172a0b}
+h2{color:#1d4ed8;border-bottom:2px solid #dbeafe;padding-bottom:8px}h3{color:#0f766e}h4{margin-bottom:5px}
+.tag{display:inline-block;background:#dbeafe;color:#1d4ed8;padding:3px 9px;border-radius:99px;font-size:12px;margin:2px}
+table{width:100%;border-collapse:collapse;margin:15px 0}th,td{border:1px solid var(--border);padding:9px;text-align:left;vertical-align:top}th{background:#eff6ff}
+pre{background:#0b1220;color:#dbeafe;padding:16px;border-radius:10px;overflow:auto;font-size:13px}
+code{background:#eef2ff;padding:2px 5px;border-radius:4px;color:#3730a3}
+.note{border-left:5px solid var(--accent);background:#f0f9ff;padding:12px 15px;margin:15px 0}.warn{border-left-color:#f59e0b;background:#fffbeb}
+.lab{background:#f8fafc;border:1px dashed #94a3b8;padding:16px;border-radius:10px}
+.quiz{background:#f8fafc;padding:15px;border-radius:10px;margin:12px 0}.answer{color:#166534;font-weight:bold}
+.top{position:fixed;right:18px;bottom:18px;background:var(--primary);color:#fff;padding:11px 14px;border-radius:50%;text-decoration:none}
+.search{width:100%;padding:11px;border:1px solid var(--border);border-radius:8px;margin-bottom:10px}
+footer{text-align:center;color:var(--muted);padding:35px}
+@media(max-width:850px){.grid{grid-template-columns:1fr}aside{position:relative;top:0}main section{padding:20px}}
+</style>
+</head>
+<body id="top">
+<header>
+<h1>📡 Modul Pembelajaran MikroTik RouterOS</h1>
+<p>Materi lengkap TKJ / Olimpiade MikroTik: jaringan dasar, RouterOS, routing, wireless, firewall, bandwidth, VPN, tools, keamanan, hingga proyek jaringan.</p>
+</header>
+
+<div class="container">
+<div class="grid">
+<aside>
+<h3>📚 Daftar Materi</h3>
+<input class="search" id="search" placeholder="Cari materi..." onkeyup="filterMenu()">
+<nav id="menu">
+<a href="#m1">1. TCP/IP & OSI</a><a href="#m2">2. Topologi Jaringan</a><a href="#m3">3. RouterOS Dasar</a>
+<a href="#m4">4. Interface, Bridge & Switch</a><a href="#m5">5. IP, ARP & DHCP</a><a href="#m6">6. Routing</a>
+<a href="#m7">7. Wireless 802.11</a><a href="#m8">8. Firewall</a><a href="#m9">9. Bandwidth</a>
+<a href="#m10">10. PPP, PPPoE & VPN</a><a href="#m11">11. Tunnel</a><a href="#m12">12. RouterOS Tools</a>
+<a href="#m13">13. Web Proxy</a><a href="#m14">14. Keamanan</a><a href="#m15">15. Advanced</a>
+<a href="#m16">16. Monitoring & Troubleshooting</a><a href="#m17">17. Hotspot & RADIUS</a>
+<a href="#m18">18. Scripting & Automation</a><a href="#m19">19. Praktikum</a><a href="#m20">20. Evaluasi</a>
+</nav>
+</aside>
+
+<main>
+<section id="m1">
+<h2>1. TCP/IP Dasar & OSI Layer</h2>
+<p>TCP/IP adalah kumpulan protokol komunikasi yang menjadi dasar jaringan Internet. OSI Layer digunakan sebagai model konseptual untuk memahami proses komunikasi jaringan.</p>
+<table><tr><th>OSI</th><th>Fungsi</th><th>Contoh</th></tr>
+<tr><td>7 Application</td><td>Layanan aplikasi</td><td>HTTP, DNS, FTP, SMTP</td></tr>
+<tr><td>6 Presentation</td><td>Format, enkripsi, kompresi</td><td>SSL/TLS, encoding</td></tr>
+<tr><td>5 Session</td><td>Mengelola sesi komunikasi</td><td>Session control</td></tr>
+<tr><td>4 Transport</td><td>Pengiriman end-to-end</td><td>TCP, UDP</td></tr>
+<tr><td>3 Network</td><td>Alamat dan routing</td><td>IP, ICMP</td></tr>
+<tr><td>2 Data Link</td><td>Frame dan MAC</td><td>Ethernet, ARP</td></tr>
+<tr><td>1 Physical</td><td>Sinyal/media fisik</td><td>Kabel, radio, fiber</td></tr></table>
+<h3>TCP vs UDP</h3><ul><li><b>TCP:</b> connection-oriented, reliable, menggunakan acknowledgement.</li><li><b>UDP:</b> connectionless, lebih ringan, tidak menjamin pengiriman.</li></ul>
+<h3>Konsep IP</h3><p>Pahami network address, host address, broadcast, gateway, subnet mask/CIDR, private IP, public IP, IPv4 dan IPv6.</p>
+<div class="note"><b>Kunci:</b> Layer 2 berhubungan dengan MAC/switching, Layer 3 dengan IP/routing, Layer 4 dengan TCP/UDP dan port.</div>
+</section>
+
+<section id="m2">
+<h2>2. Topologi Jaringan Dasar</h2>
+<p>Topologi menggambarkan cara perangkat terhubung.</p>
+<table><tr><th>Topologi</th><th>Karakteristik</th></tr>
+<tr><td>Star</td><td>Semua perangkat menuju switch pusat; mudah dikelola.</td></tr>
+<tr><td>Bus</td><td>Menggunakan media bersama; kini jarang digunakan.</td></tr>
+<tr><td>Ring</td><td>Perangkat membentuk lingkaran.</td></tr>
+<tr><td>Mesh</td><td>Banyak jalur antarperangkat; redundansi tinggi.</td></tr>
+<tr><td>Tree</td><td>Struktur bertingkat dari core ke access.</td></tr>
+<tr><td>Hybrid</td><td>Kombinasi beberapa topologi.</td></tr></table>
+<div class="lab"><b>Latihan:</b> Rancang LAN sekolah: Internet → MikroTik → Switch → PC/Access Point. Tentukan IP, gateway, DHCP, dan jalur akses Internet.</div>
+</section>
+
+<section id="m3">
+<h2>3. Instalasi & Administrasi MikroTik RouterOS</h2>
+<h3>Konsep</h3><ul><li>RouterBOARD: perangkat keras MikroTik.</li><li>RouterOS: sistem operasi jaringan MikroTik.</li><li>CHR: RouterOS untuk virtual machine/cloud.</li><li>Winbox, WebFig, SSH dan Terminal sebagai alat administrasi.</li></ul>
+<h3>Instalasi / Upgrade</h3><ul><li>Gunakan RouterOS yang sesuai dengan arsitektur perangkat.</li><li>Periksa versi dan paket sebelum upgrade.</li><li>Buat backup sebelum perubahan besar.</li><li>Setelah upgrade, periksa interface, IP, route, firewall dan service.</li></ul>
+<h3>Reset, Backup, Export, Import</h3>
+<pre>/system reset-configuration
+/system backup save name=backup-router
+/system backup load name=backup-router
+/export file=konfigurasi
+/import file-name=konfigurasi.rsc
+/system package update check-for-updates</pre>
+<div class="warn note"><b>Catatan:</b> Jangan melakukan reset/load/import pada router produksi tanpa memahami dampaknya. Simpan backup di lokasi aman.</div>
+<h3>Administrasi dasar</h3><pre>/system identity set name=R1
+/user print
+/system resource print
+/system routerboard print
+/ip service print</pre>
+</section>
+
+<section id="m4">
+<h2>4. Interface, Bridge & Switching</h2>
+<ul><li>Interface Ethernet: koneksi kabel.</li><li>Wireless: koneksi radio.</li><li>Bridge: menggabungkan interface dalam satu domain Layer 2.</li><li>Switch chip/hardware offload: pemrosesan switching oleh hardware pada perangkat yang mendukung.</li><li>STP/RSTP: mencegah loop Layer 2.</li><li>VLAN: segmentasi jaringan secara logis.</li></ul>
+<pre>/interface bridge add name=bridge-LAN
+/interface bridge port add bridge=bridge-LAN interface=ether2
+/interface bridge port add bridge=bridge-LAN interface=ether3
+/interface bridge print
+/interface bridge port print</pre>
+<div class="note">Gunakan Bridge untuk kebutuhan Layer 2. Gunakan routing untuk menghubungkan jaringan Layer 3 yang berbeda.</div>
+</section>
+
+<section id="m5">
+<h2>5. IP Address, ARP & DHCP</h2>
+<h3>IP Address</h3><pre>/ip address add address=192.168.10.1/24 interface=bridge-LAN
+/ip address print</pre>
+<h3>DHCP Server</h3><pre>/ip pool add name=pool-LAN ranges=192.168.10.10-192.168.10.254
+/ip dhcp-server network add address=192.168.10.0/24 gateway=192.168.10.1 dns-server=192.168.10.1
+/ip dhcp-server add name=dhcp-LAN interface=bridge-LAN address-pool=pool-LAN
+/ip dhcp-server enable dhcp-LAN</pre>
+<h3>DHCP Client</h3><pre>/ip dhcp-client add interface=ether1 disabled=no</pre>
+<h3>ARP</h3><p>ARP memetakan alamat IPv4 ke MAC Address pada jaringan lokal.</p>
+<pre>/ip arp print
+/ip arp add address=192.168.10.20 mac-address=AA:BB:CC:DD:EE:FF interface=bridge-LAN</pre>
+</section>
+
+<section id="m6">
+<h2>6. Routing</h2>
+<p>Routing menentukan jalur paket dari satu network menuju network lain.</p>
+<h3>Static Route</h3><pre>/ip route add dst-address=192.168.20.0/24 gateway=192.168.10.2
+/ip route print</pre>
+<h3>Default Route</h3><pre>/ip route add dst-address=0.0.0.0/0 gateway=192.168.1.1</pre>
+<h3>Policy Routing</h3><p>Policy routing dapat memilih jalur berdasarkan sumber, tujuan, routing rule atau marking. Berguna untuk dual-WAN dan pemisahan trafik.</p>
+<h3>Dynamic Routing</h3><ul><li>OSPF: routing dinamis berbasis link-state.</li><li>RIP: protokol distance-vector yang sederhana.</li><li>BGP: routing antar-AS, penting pada jaringan besar/ISP.</li></ul>
+<div class="lab"><b>Praktik:</b> Bangun 3 router R1-R2-R3. Buat tiga network berbeda dan hubungkan semuanya menggunakan static route. Setelah berhasil, bandingkan konsepnya dengan OSPF.</div>
+</section>
+
+<section id="m7">
+<h2>7. Wireless MikroTik</h2>
+<h3>Standar 802.11</h3>
+<table><tr><th>Standar</th><th>Band umum</th><th>Catatan</th></tr>
+<tr><td>802.11a</td><td>5 GHz</td><td>Kecepatan lebih tinggi daripada 802.11b/g generasi awal.</td></tr>
+<tr><td>802.11b</td><td>2.4 GHz</td><td>Data rate teoritis hingga 11 Mbps.</td></tr>
+<tr><td>802.11g</td><td>2.4 GHz</td><td>Data rate teoritis hingga 54 Mbps.</td></tr>
+<tr><td>802.11n</td><td>2.4/5 GHz</td><td>MIMO dan channel width lebih besar.</td></tr>
+<tr><td>802.11ac</td><td>5 GHz</td><td>Throughput tinggi dan channel lebih lebar.</td></tr></table>
+<p>Pelajari band, frequency, channel, channel width, data rate, signal strength, noise floor, SNR, CCQ dan regulatory domain.</p>
+<h3>Mode</h3><ul><li>AP/Access Point: menyediakan koneksi wireless.</li><li>Station/Client: terhubung ke AP.</li><li>Bridge/Station Bridge: koneksi Layer 2 sesuai kemampuan mode dan perangkat.</li></ul>
+<h3>Keamanan</h3><p>Gunakan WPA2/WPA3 bila tersedia dan sesuai perangkat/RouterOS. Gunakan password kuat, batasi management dan pilih frequency yang minim interferensi.</p>
+<h3>Monitoring</h3><pre>/interface wireless registration-table print
+/interface wireless scan wlan1
+/interface wireless monitor wlan1</pre>
+</section>
+
+<section id="m8">
+<h2>8. Firewall MikroTik</h2>
+<p>Firewall mengontrol trafik berdasarkan kondisi seperti interface, IP, protocol, port, connection state dan address-list.</p>
+<h3>Chain</h3><ul><li><b>input:</b> trafik menuju router.</li><li><b>forward:</b> trafik melewati router.</li><li><b>output:</b> trafik berasal dari router.</li></ul>
+<h3>Filter</h3><pre>/ip firewall filter add chain=input connection-state=established,related action=accept
+/ip firewall filter add chain=input connection-state=invalid action=drop
+/ip firewall filter add chain=input protocol=icmp action=accept
+/ip firewall filter add chain=input in-interface=ether1 action=drop</pre>
+<h3>NAT</h3><pre>/ip firewall nat add chain=srcnat out-interface=ether1 action=masquerade
+/ip firewall nat add chain=dstnat protocol=tcp dst-port=80 action=dst-nat to-addresses=192.168.10.10 to-ports=80</pre>
+<h3>Address-list</h3><pre>/ip firewall address-list add list=blocked address=192.168.10.50
+/ip firewall filter add chain=forward src-address-list=blocked action=drop</pre>
+<h3>FastTrack</h3><p>FastTrack dapat mempercepat pemrosesan koneksi tertentu, tetapi harus dipahami dampaknya terhadap queue, accounting, firewall dan fitur lain yang membutuhkan pemrosesan paket secara normal.</p>
+</section>
+
+<section id="m9">
+<h2>9. Bandwidth Management: Simple Queue, Burst & PCQ</h2>
+<h3>Simple Queue</h3><pre>/queue simple add name=PC-01 target=192.168.10.20/32 max-limit=5M/10M</pre>
+<p>Perhatikan urutan limit upload/download sesuai format RouterOS dan konfigurasi perangkat yang digunakan.</p>
+<h3>Burst</h3><p>Burst memungkinkan pengguna memperoleh kecepatan lebih tinggi sementara ketika rata-rata trafik berada di bawah burst-threshold.</p>
+<h3>PCQ</h3><p>PCQ dapat membagi bandwidth secara otomatis berdasarkan classifier, misalnya src-address untuk upload dan dst-address untuk download.</p>
+<pre>/queue type add name=pcq-upload kind=pcq pcq-classifier=src-address
+/queue type add name=pcq-download kind=pcq pcq-classifier=dst-address</pre>
+<div class="lab"><b>Praktik:</b> Buat jaringan 20 komputer dengan bandwidth Internet 50 Mbps. Rancang pembagian bandwidth menggunakan PCQ dan uji apakah satu komputer dapat menghabiskan bandwidth seluruh jaringan.</div>
+</section>
+
+<section id="m10">
+<h2>10. PPP, IP Pool, PPPoE & VPN</h2>
+<ul><li>PPP: protokol untuk koneksi point-to-point.</li><li>PPP Profile: parameter koneksi pengguna.</li><li>PPP Secret: akun autentikasi.</li><li>IP Pool: kumpulan alamat yang dialokasikan kepada client.</li><li>PPPoE: PPP over Ethernet.</li><li>PPTP/SSTP/L2TP: teknologi tunnel/VPN dengan karakteristik keamanan dan penggunaan yang berbeda.</li></ul>
+<h3>Konsep PPPoE</h3><pre>/ip pool add name=pool-pppoe ranges=10.10.10.10-10.10.10.100
+/ppp profile add name=profile-pppoe local-address=10.10.10.1 remote-address=pool-pppoe
+/ppp secret add name=user1 password=StrongPassword service=pppoe profile=profile-pppoe
+/interface pppoe-server server add service-name=PPPoE interface=bridge-LAN disabled=no</pre>
+<div class="note">Untuk implementasi produksi, pilih teknologi VPN yang masih didukung dan aman pada versi RouterOS yang digunakan. Hindari protokol lama jika ada alternatif yang lebih kuat.</div>
+</section>
+
+<section id="m11">
+<h2>11. Tunnel & Point-to-Point Network</h2>
+<p>Tunnel membuat jalur logis melalui jaringan yang sudah ada.</p>
+<ul><li>EoIP: membawa Ethernet melalui tunnel MikroTik.</li><li>IPIP: tunnel IP over IP.</li><li>GRE: tunnel untuk membawa trafik Layer 3.</li><li>VXLAN: virtualisasi Layer 2 di atas jaringan Layer 3 pada skenario yang sesuai.</li></ul>
+<p>Pelajari juga MTU, MSS, addressing point-to-point, routing melalui tunnel, serta keamanan tunnel.</p>
+<div class="lab"><b>Praktik:</b> Hubungkan dua LAN berbeda melalui tunnel. Pastikan kedua LAN dapat melakukan ping dan routing dengan benar.</div>
+</section>
+
+<section id="m12">
+<h2>12. RouterOS Tools</h2>
+<table><tr><th>Tool</th><th>Kegunaan</th></tr>
+<tr><td>Ping</td><td>Menguji reachability.</td></tr><tr><td>Traceroute</td><td>Melihat jalur paket.</td></tr>
+<tr><td>Torch</td><td>Melihat trafik real-time.</td></tr><tr><td>Packet Sniffer</td><td>Menganalisis paket.</td></tr>
+<tr><td>Bandwidth Test</td><td>Menguji throughput antarperangkat.</td></tr><tr><td>Netwatch</td><td>Monitoring host dan menjalankan aksi.</td></tr>
+<tr><td>Profile</td><td>Melihat penggunaan resource.</td></tr><tr><td>Fetch</td><td>Mengambil data melalui protokol jaringan yang didukung.</td></tr>
+<tr><td>Scheduler</td><td>Menjalankan tugas terjadwal.</td></tr><tr><td>Graphing</td><td>Membuat grafik monitoring.</td></tr></table>
+</section>
+
+<section id="m13">
+<h2>13. Web Proxy</h2>
+<p>Web Proxy berfungsi sebagai perantara permintaan web. Pelajari konsep proxy, cache, access control, transparent proxy, redirect dan monitoring.</p>
+<div class="warn note">Fitur proxy/cache dan dukungan protokol web berubah mengikuti versi RouterOS. Uji pada versi yang digunakan sebelum menerapkannya pada jaringan produksi.</div>
+<h3>Konsep Lab</h3><ol><li>Aktifkan proxy pada router lab.</li><li>Tentukan port proxy.</li><li>Uji client menggunakan proxy manual.</li><li>Pelajari access list dan cache.</li><li>Amati penggunaan CPU, RAM dan trafik.</li></ol>
+</section>
+
+<section id="m14">
+<h2>14. Keamanan MikroTik</h2>
+<ul><li>Gunakan password administrator yang kuat.</li><li>Buat user berdasarkan kebutuhan dan privilege.</li><li>Nonaktifkan service yang tidak digunakan.</li><li>Batasi akses Winbox/SSH/WebFig dari jaringan management.</li><li>Gunakan firewall untuk melindungi input router.</li><li>Matikan MAC-Telnet/MAC-Winbox jika tidak dibutuhkan.</li><li>Kelola Neighbor Discovery.</li><li>Simpan backup di lokasi aman.</li><li>Monitor log dan percobaan akses.</li><li>Update RouterOS dengan prosedur backup dan pengujian yang benar.</li></ul>
+</section>
+
+<section id="m15">
+<h2>15. Materi Advanced MikroTik</h2>
+<ul><li>VLAN & Inter-VLAN Routing</li><li>Dual WAN</li><li>Failover</li><li>Load balancing</li><li>PCC</li><li>Recursive routing</li><li>Policy routing</li><li>Queue Tree & QoS</li><li>OSPF</li><li>BGP dasar</li><li>VPN site-to-site</li><li>Hotspot & captive portal</li><li>RADIUS/User Manager</li><li>RouterOS API</li><li>Automation & scripting</li></ul>
+<h3>Contoh konsep PCC</h3><p>PCC (Per Connection Classifier) dapat membagi koneksi berdasarkan parameter tertentu sehingga koneksi baru diarahkan ke WAN berbeda. Implementasinya memerlukan mangle, routing-mark/routing-table, NAT dan route yang konsisten.</p>
+</section>
+
+<section id="m16">
+<h2>16. Monitoring & Troubleshooting</h2>
+<h3>Metode troubleshooting berlapis</h3>
+<ol><li><b>Physical:</b> kabel, power, link, konektor.</li><li><b>Data Link:</b> MAC, bridge, VLAN, loop.</li><li><b>Network:</b> IP, subnet, gateway, route.</li><li><b>Transport:</b> TCP/UDP, port, connection.</li><li><b>Application:</b> DNS, HTTP, service.</li></ol>
+<h3>Perintah penting</h3><pre>/interface print
+/ip address print
+/ip route print
+/ip arp print
+/ip dhcp-server lease print
+/ip firewall connection print
+/ip firewall filter print stats
+/ip firewall nat print stats
+/queue simple print stats
+/log print
+/system resource print</pre>
+<div class="lab"><b>Studi kasus:</b> Client mendapat IP DHCP tetapi tidak bisa Internet. Periksa: DHCP → IP client → gateway → ARP → default route → DNS → NAT → firewall → interface WAN.</div>
+</section>
+
+<section id="m17">
+<h2>17. Hotspot, RADIUS & User Management</h2>
+<ul><li>Hotspot menyediakan autentikasi pengguna melalui captive portal.</li><li>RADIUS menyediakan autentikasi/otorisasi terpusat.</li><li>User Manager dapat digunakan pada skenario yang didukung untuk pengelolaan user.</li></ul>
+<p>Materi latihan: membuat profile user, membatasi bandwidth, mengatur waktu akses, membuat voucher dan menghubungkan autentikasi ke RADIUS.</p>
+</section>
+
+<section id="m18">
+<h2>18. Scripting & Automation RouterOS</h2>
+<p>RouterOS menyediakan scripting untuk otomatisasi pekerjaan administrasi.</p>
+<pre>:log info "Monitoring Router"
+:local cpu [/system resource get cpu-load]
+:log info ("CPU Load: " . $cpu . "%")</pre>
+<p>Pelajari variable, condition, loop, scheduler, logging, script permissions dan automation yang aman.</p>
+<div class="warn note">Jangan menjalankan script yang tidak dipahami pada router produksi. Selalu uji pada lab.</div>
+</section>
+
+<section id="m19">
+<h2>19. Paket Praktikum Bertahap</h2>
+<table><tr><th>Lab</th><th>Target</th></tr>
+<tr><td>01</td><td>IP Address & basic RouterOS</td></tr><tr><td>02</td><td>DHCP Server & Client</td></tr>
+<tr><td>03</td><td>NAT Internet</td></tr><tr><td>04</td><td>Bridge & Switching</td></tr>
+<tr><td>05</td><td>Static Routing</td></tr><tr><td>06</td><td>Wireless AP & Client</td></tr>
+<tr><td>07</td><td>Firewall dasar</td></tr><tr><td>08</td><td>Address-list & NAT</td></tr>
+<tr><td>09</td><td>Simple Queue & Burst</td></tr><tr><td>10</td><td>PCQ</td></tr>
+<tr><td>11</td><td>PPPoE Server</td></tr><tr><td>12</td><td>VPN/Tunnel</td></tr>
+<tr><td>13</td><td>VLAN</td></tr><tr><td>14</td><td>Dual WAN & Failover</td></tr>
+<tr><td>15</td><td>PCC Load Balancing</td></tr><tr><td>16</td><td>OSPF</td></tr>
+<tr><td>17</td><td>Monitoring & Troubleshooting</td></tr><tr><td>18</td><td>Project jaringan sekolah/ISP mini</td></tr></table>
+<h3>Proyek Akhir</h3>
+<div class="lab"><b>Bangun jaringan sekolah mini:</b><br>
+Internet/WAN → MikroTik Core → VLAN Management, Guru, Siswa, Server → Switch/AP.<br>
+Persyaratan: DHCP, DNS, NAT, firewall, bandwidth management, wireless security, routing, monitoring, backup konfigurasi dan dokumentasi topologi.
+</div>
+</section>
+
+<section id="m20">
+<h2>20. Evaluasi Pembelajaran</h2>
+<div class="quiz"><b>1. Layer OSI yang menangani routing adalah?</b><p>A. Physical &nbsp; B. Data Link &nbsp; <span class="answer">C. Network</span> &nbsp; D. Application</p></div>
+<div class="quiz"><b>2. Chain firewall untuk trafik yang menuju router adalah?</b><p>A. forward &nbsp; <span class="answer">B. input</span> &nbsp; C. output &nbsp; D. nat</p></div>
+<div class="quiz"><b>3. Fungsi DHCP Server?</b><p><span class="answer">Memberikan konfigurasi IP secara otomatis kepada client.</span></p></div>
+<div class="quiz"><b>4. Apa fungsi masquerade?</b><p><span class="answer">Melakukan source NAT dengan mekanisme yang sesuai untuk alamat keluar yang dapat berubah, umum digunakan pada koneksi Internet.</span></p></div>
+<div class="quiz"><b>5. Apa fungsi static route?</b><p><span class="answer">Menentukan jalur routing yang dikonfigurasi secara manual.</span></p></div>
+<div class="quiz"><b>6. Apa kegunaan Simple Queue?</b><p><span class="answer">Mengatur dan membatasi bandwidth berdasarkan target/parameter queue.</span></p></div>
+<div class="quiz"><b>7. Apa fungsi ARP?</b><p><span class="answer">Memetakan IPv4 address ke MAC address pada jaringan lokal.</span></p></div>
+<div class="quiz"><b>8. Mengapa firewall input penting?</b><p><span class="answer">Untuk mengontrol akses menuju router itu sendiri.</span></p></div>
+<div class="quiz"><b>9. Apa tujuan OSPF?</b><p><span class="answer">Menyediakan routing dinamis berbasis link-state.</span></p></div>
+<div class="quiz"><b>10. Sebutkan minimal 5 tool troubleshooting RouterOS.</b><p><span class="answer">Ping, Traceroute, Torch, Packet Sniffer, Log, Profile, Netwatch, dan lainnya.</span></p></div>
+</section>
+
+<section>
+<h2>🎯 Jalur Belajar yang Disarankan</h2>
+<p><span class="tag">Basic</span> Jaringan → IP → RouterOS → DHCP → NAT → Bridge</p>
+<p><span class="tag">Intermediate</span> Routing → Wireless → Firewall → Queue → PPPoE → VPN</p>
+<p><span class="tag">Advanced</span> VLAN → Failover → PCC → QoS → OSPF → Monitoring</p>
+<p><span class="tag">Expert</span> BGP → Automation → Security → Design jaringan → Troubleshooting kompleks</p>
+<div class="note"><b>Tips Olimpiade:</b> Jangan hanya menghafal command. Pahami hubungan antara topologi, IP addressing, routing table, ARP, firewall, NAT, queue dan aliran paket.</div>
+</section>
+</main>
+</div>
+</div>
+<a class="top" href="#top">↑</a>
+<footer>Modul Pembelajaran MikroTik RouterOS • TKJ • Laboratorium Jaringan</footer>
+
+<script>
+function filterMenu(){
+ const q=document.getElementById('search').value.toLowerCase();
+ document.querySelectorAll('#menu a').forEach(a=>{
+   a.style.display=a.textContent.toLowerCase().includes(q)?'block':'none';
+ });
+}
+</script>
+</body>
+</html>
